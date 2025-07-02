@@ -65,6 +65,31 @@
             border-radius: 4px;
             box-sizing: border-box;
         }
+        /* Nuevos estilos para el contenedor de checkboxes de horario */
+        #time-checkbox-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            max-height: 160px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #fff;
+        }
+        .time-checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .time-checkbox-item input[type="checkbox"] {
+            width: auto; /* Anula el 100% de ancho */
+            flex-shrink: 0;
+        }
+        .time-checkbox-item label {
+            font-weight: normal;
+            margin-bottom: 0;
+        }
         button {
             background-color: #2c3e50;
             color: white;
@@ -524,7 +549,6 @@
             <button id="toggle-view" class="toggle-btn">Ver Horario</button>
         </div>
         
-        <!-- Panel de control -->
         <div id="control-view">
             <div class="control-container">
                 <div class="control-panel">
@@ -544,19 +568,9 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="time-select">Horario:</label>
-                        <select id="time-select">
-                            <option value="7-9">7:00 - 9:00</option>
-                            <option value="9-11">9:00 - 11:00</option>
-                            <option value="11-13">11:00 - 13:00</option>
-                            <option value="13-15">13:00 - 15:00</option>
-                            <option value="15-17">15:00 - 17:00</option>
-                            <option value="17-19">17:00 - 19:00</option>
-                            <option value="19-21">19:00 - 21:00</option>
-                            <option value="21-23">21:00 - 23:00</option>
-                            <option value="23-1">23:00 - 1:00</option>
-                            <option value="1-3">1:00 - 3:00</option>
-                        </select>
+                        <label>Horario(s):</label>
+                        <div id="time-checkbox-container">
+                            </div>
                     </div>
                     
                     <div class="form-group">
@@ -590,19 +604,17 @@
                     <div class="buttons-group">
                         <button id="add-btn" class="add-btn">Añadir Actividad</button>
                         <button id="update-btn" class="update-btn">Actualizar Actividad</button>
-                        <button id="delete-btn" class="delete-btn">Eliminar Actividad</button>
+                        <button id="delete-btn" class="delete-btn">Eliminar Actividad(es)</button>
                     </div>
                 </div>
                 
                 <div class="control-panel">
                     <h3>Actividades Existentes</h3>
                     <div class="activity-list" id="activity-list">
-                        <!-- Las actividades se cargarán aquí dinámicamente -->
-                    </div>
+                        </div>
                 </div>
             </div>
 
-            <!-- Nueva sección de backup y restauración -->
             <div class="backup-section">
                 <h3>Backup y Restauración</h3>
                 <p>Realiza copias de seguridad de tu horario o restáuralo desde un archivo guardado previamente.</p>
@@ -622,29 +634,22 @@
             </div>
         </div>
         
-        <!-- Visualización del horario -->
         <div id="schedule-view" class="schedule-container">
             <h2>Mi Cronograma Semanal de Entretenimiento y Aprendizaje</h2>
             
             <div class="legend" id="schedule-legend">
-                <!-- La leyenda se generará dinámicamente aquí -->
-            </div>
+                </div>
             
-            <!-- Horario para escritorio -->
             <div class="schedule" id="schedule-display">
-                <!-- El horario se generará dinámicamente aquí -->
-            </div>
+                </div>
             
-            <!-- Horario para móviles -->
             <div class="mobile-schedule" id="mobile-schedule-display">
-                <!-- El horario móvil se generará dinámicamente aquí -->
-            </div>
+                </div>
 
 	    <div class="summary-container" id="category-summary">
     <h3>Resumen de Horas por Categoría</h3>
     <div class="summary-grid" id="summary-grid">
-        <!-- El resumen se generará dinámicamente aquí -->
-    </div>
+        </div>
 </div>
 
         </div>
@@ -712,24 +717,38 @@
             }
         };
 
+        // Constante con los slots de tiempo
+        const TIME_SLOTS = {
+            '7-9': '7:00 - 9:00',
+            '9-11': '9:00 - 11:00',
+            '11-13': '11:00 - 13:00',
+            '13-15': '13:00 - 15:00',
+            '15-17': '15:00 - 17:00',
+            '17-19': '17:00 - 19:00',
+            '19-21': '19:00 - 21:00',
+            '21-23': '21:00 - 23:00',
+            '23-1': '23:00 - 1:00',
+            '1-3': '1:00 - 3:00'
+        };
+
         // Variables para el control
         let selectedDay = 'monday';
-        let selectedTime = '9-11';
+        let selectedTime = null; // Para la edición de una sola actividad
         let selectedActivity = null;
         let selectedCategoryClass = 'responsibilities';
         let currentView = 'control'; // 'control' o 'schedule'
         let newGroupCounter = 1;
         const availableGroupClasses = ['new-group-1', 'new-group-2', 'new-group-3', 'new-group-4'];
         const groupColors = [
-    { bg: '#b2ebf2', border: '#00bcd4', name: '' },
-    { bg: '#c8e6c9', border: '#4caf50', name: '' },
-    { bg: '#f0f4c3', border: '#cddc39', name: '' },
-    { bg: '#ffccbc', border: '#ff5722', name: '' }
-];
+            { bg: '#b2ebf2', border: '#00bcd4', name: '' },
+            { bg: '#c8e6c9', border: '#4caf50', name: '' },
+            { bg: '#f0f4c3', border: '#cddc39', name: '' },
+            { bg: '#ffccbc', border: '#ff5722', name: '' }
+        ];
 
         // Elementos del DOM
         const daySelect = document.getElementById('day-select');
-        const timeSelect = document.getElementById('time-select');
+        const timeCheckboxContainer = document.getElementById('time-checkbox-container');
         const activityContent = document.getElementById('activity-content');
         const categoryOptions = document.querySelectorAll('.category-option');
         const colorPreview = document.getElementById('color-preview');
@@ -761,8 +780,10 @@
         function init() {
             // Cargar eventos
             daySelect.addEventListener('change', handleDayChange);
-            timeSelect.addEventListener('change', handleTimeChange);
             
+            // Renderizar los checkboxes de horario
+            renderTimeCheckboxes();
+
             // Eventos para los botones de categoría
             categoryOptions.forEach(option => {
                 option.addEventListener('click', handleCategorySelect);
@@ -791,6 +812,35 @@
             renderSchedule();
         }
 
+        // CAMBIO: Renderizar los checkboxes de horario
+        function renderTimeCheckboxes() {
+            timeCheckboxContainer.innerHTML = '';
+            for (const [value, text] of Object.entries(TIME_SLOTS)) {
+                const item = document.createElement('div');
+                item.className = 'time-checkbox-item';
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `time-${value}`;
+                checkbox.name = 'time-slot';
+                checkbox.value = value;
+                
+                const label = document.createElement('label');
+                label.htmlFor = `time-${value}`;
+                label.textContent = text;
+                
+                item.appendChild(checkbox);
+                item.appendChild(label);
+                timeCheckboxContainer.appendChild(item);
+            }
+        }
+        
+        // CAMBIO: Obtener los horarios seleccionados en los checkboxes
+        function getSelectedTimes() {
+            const checkedBoxes = document.querySelectorAll('#time-checkbox-container input[type="checkbox"]:checked');
+            return Array.from(checkedBoxes).map(cb => cb.value);
+        }
+
         // Alternar entre vistas
         function toggleView() {
             if (currentView === 'control') {
@@ -815,50 +865,44 @@
 
         // Manejar guardar nuevo grupo
        function handleSaveNewGroup() {
-    const groupName = newGroupName.value.trim();
-    if (!groupName) return;
-    
-    if (newGroupCounter > 4) {
-        showMessage('Has alcanzado el límite de nuevos grupos (4)', 'error');
-        return;
-    }
-    
-    const groupClass = availableGroupClasses[newGroupCounter - 1];
-    const groupColor = groupColors[newGroupCounter - 1];
-    groupColor.name = groupName; // Guardar el nombre del grupo
-    
-    // Crear nuevo elemento de categoría
-    const newCategory = document.createElement('div');
-    newCategory.className = 'category-option';
-    newCategory.style.backgroundColor = groupColor.bg;
-    newCategory.style.borderLeft = `4px solid ${groupColor.border}`;
-    newCategory.dataset.class = groupClass;
-    newCategory.textContent = groupName;
-    newCategory.addEventListener('click', handleCategorySelect);
-    
-    // Añadir al contenedor de categorías
-    const categoryContainer = document.querySelector('.category-options');
-    categoryContainer.appendChild(newCategory);
-    
-    // Incrementar contador y resetear formulario
-    newGroupCounter++;
-    toggleNewGroupForm();
-    showMessage(`Nuevo grupo "${groupName}" creado`, 'success');
-    
-    // Actualizar el horario para mostrar la nueva categoría si es usada
-    renderSchedule();
-}
+            const groupName = newGroupName.value.trim();
+            if (!groupName) return;
+            
+            if (newGroupCounter > 4) {
+                showMessage('Has alcanzado el límite de nuevos grupos (4)', 'error');
+                return;
+            }
+            
+            const groupClass = availableGroupClasses[newGroupCounter - 1];
+            const groupColor = groupColors[newGroupCounter - 1];
+            groupColor.name = groupName; // Guardar el nombre del grupo
+            
+            // Crear nuevo elemento de categoría
+            const newCategory = document.createElement('div');
+            newCategory.className = 'category-option';
+            newCategory.style.backgroundColor = groupColor.bg;
+            newCategory.style.borderLeft = `4px solid ${groupColor.border}`;
+            newCategory.dataset.class = groupClass;
+            newCategory.textContent = groupName;
+            newCategory.addEventListener('click', handleCategorySelect);
+            
+            // Añadir al contenedor de categorías
+            const categoryContainer = document.querySelector('.category-options');
+            categoryContainer.appendChild(newCategory);
+            
+            // Incrementar contador y resetear formulario
+            newGroupCounter++;
+            toggleNewGroupForm();
+            showMessage(`Nuevo grupo "${groupName}" creado`, 'success');
+            
+            // Actualizar el horario para mostrar la nueva categoría si es usada
+            renderSchedule();
+        }
 
         // Manejar cambio de día
         function handleDayChange(e) {
             selectedDay = e.target.value;
             loadActivities();
-            updateForm();
-        }
-
-        // Manejar cambio de horario
-        function handleTimeChange(e) {
-            selectedTime = e.target.value;
             updateForm();
         }
 
@@ -907,12 +951,19 @@
 
         // Seleccionar una actividad para editar
         function selectActivity(time, activity) {
-            selectedTime = time;
+            selectedTime = time; // Contexto para actualizar/borrar individualmente
             selectedActivity = activity;
             
-            // Actualizar selects
-            timeSelect.value = time;
             activityContent.value = activity.content;
+            
+            // CAMBIO: Desmarcar todos los checkboxes y marcar el que corresponde
+            document.querySelectorAll('#time-checkbox-container input[type="checkbox"]').forEach(cb => {
+                cb.checked = false;
+            });
+            const checkbox = document.getElementById(`time-${time}`);
+            if (checkbox) {
+                checkbox.checked = true;
+            }
             
             // Encontrar y seleccionar la categoría correspondiente
             document.querySelectorAll('.category-option').forEach(option => {
@@ -934,28 +985,43 @@
             });
         }
 
-        // Manejar añadir actividad
+        // CAMBIO: Manejar añadir actividad en múltiples horarios
         function handleAddActivity() {
             const content = activityContent.value.trim();
-            if (!content) return;
+            if (!content) {
+                showMessage('El contenido de la actividad no puede estar vacío.', 'error');
+                return;
+            }
             
+            const timesToAdd = getSelectedTimes();
+            if (timesToAdd.length === 0) {
+                showMessage('Por favor, selecciona al menos un horario.', 'error');
+                return;
+            }
+
             if (!scheduleData[selectedDay]) {
                 scheduleData[selectedDay] = {};
             }
             
-            scheduleData[selectedDay][selectedTime] = {
-                content: content,
-                class: selectedCategoryClass
-            };
+            timesToAdd.forEach(time => {
+                scheduleData[selectedDay][time] = {
+                    content: content,
+                    class: selectedCategoryClass
+                };
+            });
             
             loadActivities();
             resetForm();
             renderSchedule();
+            showMessage(`Actividad añadida en ${timesToAdd.length} horario(s).`, 'success');
         }
 
-        // Manejar actualizar actividad
+        // MANTIENE LÓGICA ORIGINAL: Actualizar solo funciona para una actividad
         function handleUpdateActivity() {
-            if (!selectedActivity) return;
+            if (!selectedActivity || !selectedTime) {
+                showMessage('Por favor, selecciona una actividad de la lista para actualizar.', 'error');
+                return;
+            }
             
             const content = activityContent.value.trim();
             if (!content) return;
@@ -968,43 +1034,50 @@
             loadActivities();
             resetForm();
             renderSchedule();
+            showMessage('Actividad actualizada correctamente.', 'success');
         }
 
-        // Manejar eliminar actividad
+        // CAMBIO: Manejar eliminar actividad(es) de los horarios seleccionados
         function handleDeleteActivity() {
-            if (!selectedActivity) return;
+            const timesToDelete = getSelectedTimes();
             
-            delete scheduleData[selectedDay][selectedTime];
-            loadActivities();
-            resetForm();
-            renderSchedule();
+            if (timesToDelete.length === 0) {
+                showMessage('Selecciona uno o más horarios para eliminar usando las casillas de verificación.', 'error');
+                return;
+            }
+            
+            if (confirm(`¿Estás seguro de que deseas eliminar las actividades de los ${timesToDelete.length} horario(s) seleccionado(s)?`)) {
+                timesToDelete.forEach(time => {
+                    if (scheduleData[selectedDay] && scheduleData[selectedDay][time]) {
+                        delete scheduleData[selectedDay][time];
+                    }
+                });
+                
+                loadActivities();
+                resetForm();
+                renderSchedule();
+                showMessage(`Se eliminaron ${timesToDelete.length} actividad(es).`, 'success');
+            }
         }
 
         // Actualizar el formulario con los datos actuales
         function updateForm() {
-            if (!scheduleData[selectedDay] || !scheduleData[selectedDay][selectedTime]) {
-                selectedActivity = null;
-                activityContent.value = '';
-                return;
-            }
-            
-            selectedActivity = scheduleData[selectedDay][selectedTime];
-            activityContent.value = selectedActivity.content;
-            
-            // Seleccionar la categoría correspondiente
-            document.querySelectorAll('.category-option').forEach(option => {
-                if (option.dataset.class === selectedActivity.class) {
-                    option.click();
-                }
-            });
+            selectedActivity = null;
+            selectedTime = null;
+            activityContent.value = '';
+            resetForm();
         }
 
         // Resetear el formulario
         function resetForm() {
             selectedActivity = null;
+            selectedTime = null;
             activityContent.value = '';
-            timeSelect.value = '9-11';
-            selectedTime = '9-11';
+            
+            // CAMBIO: Desmarcar todos los checkboxes
+            document.querySelectorAll('#time-checkbox-container input[type="checkbox"]:checked').forEach(cb => {
+                cb.checked = false;
+            });
             
             // Seleccionar la primera categoría por defecto
             document.querySelector('.category-option').click();
@@ -1012,19 +1085,7 @@
 
         // Formatear el horario para mostrar
         function formatTime(timeKey) {
-            const times = {
-                '7-9': '7:00 - 9:00',
-                '9-11': '9:00 - 11:00',
-                '11-13': '11:00 - 13:00',
-                '13-15': '13:00 - 15:00',
-                '15-17': '15:00 - 17:00',
-                '17-19': '17:00 - 19:00',
-                '19-21': '19:00 - 21:00',
-                '21-23': '21:00 - 23:00',
-                '23-1': '23:00 - 1:00',
-                '1-3': '1:00 - 3:00'
-            };
-            return times[timeKey] || timeKey;
+            return TIME_SLOTS[timeKey] || timeKey;
         }
 
         // Obtener color de fondo basado en la clase
@@ -1231,14 +1292,14 @@
             timeColumn.appendChild(document.createElement('div'));
             
             // Añadir slots de tiempo
-            const timeSlots = [
+            const timeSlotsDisplay = [
                 '7:00 - 9:00', '9:00 - 11:00', '11:00 - 13:00',
                 '13:00 - 15:00', '15:00 - 17:00', '17:00 - 19:00',
                 '19:00 - 21:00', '21:00 - 23:00', '23:00 - 1:00',
                 '1:00 - 3:00'
             ];
             
-            timeSlots.forEach(slot => {
+            timeSlotsDisplay.forEach(slot => {
                 const timeSlot = document.createElement('div');
                 timeSlot.className = 'time-slot';
                 timeSlot.textContent = slot;
