@@ -129,20 +129,27 @@
         .add-btn:hover {
             background-color: #27ae60;
         }
-        .color-options {
+        .category-options {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 10px;
             margin-top: 10px;
         }
-        .color-option {
-            height: 30px;
+        .category-option {
+            height: 40px;
             border-radius: 4px;
             cursor: pointer;
             border: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
         }
-        .color-option.selected {
+        .category-option.selected {
             border-color: #2c3e50;
+            transform: scale(0.98);
         }
         
         /* Estilos del horario visual - Versión escritorio */
@@ -198,51 +205,35 @@
             flex-direction: column;
             justify-content: center;
         }
-        .morning {
-            background-color: #e3f2fd;
-            border-left: 4px solid #2196f3;
-        }
-        .evening {
-            background-color: #e8f5e9;
-            border-left: 4px solid #4caf50;
-        }
-        .night {
-            background-color: #f3e5f5;
-            border-left: 4px solid #9c27b0;
-        }
-        .weekend {
-            background-color: #fff3e0;
-            border-left: 4px solid #ff9800;
-        }
-        .language {
-            background-color: #ffecb3;
-            border-left: 4px solid #ffc107;
-        }
-        .chores {
+        .responsibilities {
             background-color: #ffcdd2;
             border-left: 4px solid #f44336;
         }
-        .movie {
+        .fun {
             background-color: #d1c4e9;
             border-left: 4px solid #673ab7;
+        }
+        .studies {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196f3;
         }
         .work {
             background-color: #d7ccc8;
             border-left: 4px solid #5d4037;
         }
-        .new1 {
+        .new-group-1 {
             background-color: #b2ebf2;
             border-left: 4px solid #00bcd4;
         }
-        .new2 {
+        .new-group-2 {
             background-color: #c8e6c9;
             border-left: 4px solid #4caf50;
         }
-        .new3 {
+        .new-group-3 {
             background-color: #f0f4c3;
             border-left: 4px solid #cddc39;
         }
-        .new4 {
+        .new-group-4 {
             background-color: #ffccbc;
             border-left: 4px solid #ff5722;
         }
@@ -315,6 +306,73 @@
             font-style: italic;
         }
 
+        /* Nuevos estilos para backup/restauración */
+        .backup-section {
+            margin-top: 30px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .backup-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .backup-btn {
+            background-color: #8e44ad;
+        }
+        .backup-btn:hover {
+            background-color: #7d3c98;
+        }
+        .restore-btn {
+            background-color: #16a085;
+        }
+        .restore-btn:hover {
+            background-color: #138a72;
+        }
+        .clear-btn {
+            background-color: #c0392b;
+        }
+        .clear-btn:hover {
+            background-color: #a5281b;
+        }
+
+        /* Estilos para nuevo grupo */
+        .new-group-form {
+            margin-top: 15px;
+            display: none;
+        }
+        .new-group-input {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .new-group-input input {
+            flex: 1;
+        }
+        .new-group-btn {
+            background-color: #9c27b0;
+        }
+        .new-group-btn:hover {
+            background-color: #7b1fa2;
+        }
+
+        /* Nuevos estilos para el filtrado de categorías */
+        .legend-item.filter-category {
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .legend-item.filter-category:hover {
+            background-color: #f0f0f0;
+        }
+        .legend-item.filter-category.active {
+            background-color: #e0e0e0;
+            font-weight: bold;
+        }
+
         @media (max-width: 768px) {
             /* Ajustes generales para móvil */
             body {
@@ -361,9 +419,14 @@
                 padding: 12px;
             }
             
-            /* Ajustar selectores de color */
-            .color-options {
-                grid-template-columns: repeat(3, 1fr);
+            /* Ajustar selectores de categoría */
+            .category-options {
+                grid-template-columns: 1fr;
+            }
+
+            /* Ajustes para botones de backup */
+            .backup-buttons {
+                flex-direction: column;
             }
         }
 
@@ -440,23 +503,25 @@
                     </div>
                     
                     <div class="form-group">
-                        <label>Categoría/Color:</label>
-                        <div class="color-options">
-                            <div class="color-option selected" style="background-color: #e3f2fd; border-left: 4px solid #2196f3;" data-class="morning"></div>
-                            <div class="color-option" style="background-color: #e8f5e9; border-left: 4px solid #4caf50;" data-class="evening"></div>
-                            <div class="color-option" style="background-color: #f3e5f5; border-left: 4px solid #9c27b0;" data-class="night"></div>
-                            <div class="color-option" style="background-color: #fff3e0; border-left: 4px solid #ff9800;" data-class="weekend"></div>
-                            <div class="color-option" style="background-color: #ffecb3; border-left: 4px solid #ffc107;" data-class="language"></div>
-                            <div class="color-option" style="background-color: #ffcdd2; border-left: 4px solid #f44336;" data-class="chores"></div>
-                            <div class="color-option" style="background-color: #d1c4e9; border-left: 4px solid #673ab7;" data-class="movie"></div>
-                            <div class="color-option" style="background-color: #d7ccc8; border-left: 4px solid #5d4037;" data-class="work"></div>
-                            <div class="color-option" style="background-color: #b2ebf2; border-left: 4px solid #00bcd4;" data-class="new1"></div>
-                            <div class="color-option" style="background-color: #c8e6c9; border-left: 4px solid #4caf50;" data-class="new2"></div>
-                            <div class="color-option" style="background-color: #f0f4c3; border-left: 4px solid #cddc39;" data-class="new3"></div>
-                            <div class="color-option" style="background-color: #ffccbc; border-left: 4px solid #ff5722;" data-class="new4"></div>
+                        <label>Categoría:</label>
+                        <div class="category-options">
+                            <div class="category-option selected" style="background-color: #ffcdd2; border-left: 4px solid #f44336;" data-class="responsibilities">Responsabilidades</div>
+                            <div class="category-option" style="background-color: #d1c4e9; border-left: 4px solid #673ab7;" data-class="fun">Diversión</div>
+                            <div class="category-option" style="background-color: #e3f2fd; border-left: 4px solid #2196f3;" data-class="studies">Estudios</div>
+                            <div class="category-option" style="background-color: #d7ccc8; border-left: 4px solid #5d4037;" data-class="work">Trabajos</div>
                         </div>
-                        <div id="color-preview" class="preview" style="background-color: #e3f2fd; border-left: 4px solid #2196f3;">
-                            Vista previa del color
+                        
+                        <button id="add-group-btn" class="new-group-btn">+ Crear Nuevo Grupo</button>
+                        
+                        <div class="new-group-form" id="new-group-form">
+                            <div class="new-group-input">
+                                <input type="text" id="new-group-name" placeholder="Nombre del nuevo grupo">
+                                <button id="save-group-btn" class="add-btn">Guardar</button>
+                            </div>
+                        </div>
+                        
+                        <div id="color-preview" class="preview" style="background-color: #ffcdd2; border-left: 4px solid #f44336;">
+                            Vista previa de la categoría
                         </div>
                     </div>
                     
@@ -474,53 +539,33 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Nueva sección de backup y restauración -->
+            <div class="backup-section">
+                <h3>Backup y Restauración</h3>
+                <p>Realiza copias de seguridad de tu horario o restáuralo desde un archivo guardado previamente.</p>
+                
+                <div class="form-group">
+                    <label for="backup-name">Nombre del backup (opcional):</label>
+                    <input type="text" id="backup-name" placeholder="Ej: Horario Julio 2023">
+                </div>
+                
+                <div class="backup-buttons">
+                    <button id="backup-btn" class="backup-btn">Crear Backup</button>
+                    <button id="restore-btn" class="restore-btn">Restaurar desde Backup</button>
+                    <button id="clear-btn" class="clear-btn">Borrar Todos los Datos</button>
+                </div>
+                
+                <div id="backup-message" style="margin-top: 15px; font-size: 14px;"></div>
+            </div>
         </div>
         
         <!-- Visualización del horario -->
         <div id="schedule-view" class="schedule-container">
             <h2>Mi Cronograma Semanal de Entretenimiento y Aprendizaje</h2>
             
-            <div class="legend">
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #e3f2fd; border-color: #2196f3;"></div>
-                    <span>Mañana (7am-12pm)</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #e8f5e9; border-color: #4caf50;"></div>
-                    <span>Tarde/Noche (6pm-2am)</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #ffecb3; border-color: #ffc107;"></div>
-                    <span>Aprendizaje de idiomas</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #ffcdd2; border-color: #f44336;"></div>
-                    <span>Tareas domésticas</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #d1c4e9; border-color: #673ab7;"></div>
-                    <span>Película</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #fff3e0; border-color: #ff9800;"></div>
-                    <span>Fin de semana</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #d7ccc8; border-color: #5d4037;"></div>
-                    <span>Trabajo</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #b2ebf2; border-color: #00bcd4;"></div>
-                    <span>Nueva Categoría 1</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #f0f4c3; border-color: #cddc39;"></div>
-                    <span>Nueva Categoría 2</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #ffccbc; border-color: #ff5722;"></div>
-                    <span>Nueva Categoría 3</span>
-                </div>
+            <div class="legend" id="schedule-legend">
+                <!-- La leyenda se generará dinámicamente aquí -->
             </div>
             
             <!-- Horario para escritorio -->
@@ -537,63 +582,63 @@
 
     <script>
         // Datos iniciales del horario
-        const scheduleData = {
+        let scheduleData = {
             monday: {
-                '9-11': { content: 'Aprender Inglés (app)', class: 'morning language' },
-                '11-13': { content: 'Juegos: PS4', class: 'morning' },
+                '9-11': { content: 'Aprender Inglés (app)', class: 'studies' },
+                '11-13': { content: 'Juegos: PS4', class: 'fun' },
                 '13-15': { content: 'Trabajo', class: 'work' },
                 '15-17': { content: 'Trabajo', class: 'work' },
                 '17-19': { content: 'Trabajo', class: 'work' },
-                '19-21': { content: 'Limpiar segundo piso', class: 'evening chores' },
-                '21-23': { content: 'Juegos: Nintendo Wii', class: 'evening' }
+                '19-21': { content: 'Limpiar segundo piso', class: 'responsibilities' },
+                '21-23': { content: 'Juegos: Nintendo Wii', class: 'fun' }
             },
             tuesday: {
-                '9-11': { content: 'Aprender Chino (app)', class: 'morning language' },
-                '11-13': { content: 'Juegos: Nintendo Wii', class: 'morning' },
+                '9-11': { content: 'Aprender Chino (app)', class: 'studies' },
+                '11-13': { content: 'Juegos: Nintendo Wii', class: 'fun' },
                 '13-15': { content: 'Trabajo', class: 'work' },
                 '15-17': { content: 'Trabajo', class: 'work' },
                 '17-19': { content: 'Trabajo', class: 'work' },
-                '19-21': { content: 'Arreglar accesorios', class: 'evening chores' },
-                '21-23': { content: 'Juegos: PS3', class: 'evening' }
+                '19-21': { content: 'Arreglar accesorios', class: 'responsibilities' },
+                '21-23': { content: 'Juegos: PS3', class: 'fun' }
             },
             wednesday: {
-                '9-11': { content: 'Aprender Inglés (app)', class: 'morning language' },
-                '11-13': { content: 'Juegos: Xbox 360', class: 'morning' },
+                '9-11': { content: 'Aprender Inglés (app)', class: 'studies' },
+                '11-13': { content: 'Juegos: Xbox 360', class: 'fun' },
                 '13-15': { content: 'Trabajo', class: 'work' },
                 '15-17': { content: 'Trabajo', class: 'work' },
                 '17-19': { content: 'Trabajo', class: 'work' },
-                '19-21': { content: 'Ver 1 película', class: 'evening movie' }
+                '19-21': { content: 'Ver 1 película', class: 'fun' }
             },
             thursday: {
-                '9-11': { content: 'Aprender Chino (app)', class: 'morning language' },
-                '11-13': { content: 'Juegos: Consola Retro', class: 'morning' },
+                '9-11': { content: 'Aprender Chino (app)', class: 'studies' },
+                '11-13': { content: 'Juegos: Consola Retro', class: 'fun' },
                 '13-15': { content: 'Trabajo', class: 'work' },
                 '15-17': { content: 'Trabajo', class: 'work' },
                 '17-19': { content: 'Trabajo', class: 'work' },
-                '19-21': { content: 'Limpiar cosas personales', class: 'evening chores' },
-                '21-23': { content: 'Juegos: PS4', class: 'evening' }
+                '19-21': { content: 'Limpiar cosas personales', class: 'responsibilities' },
+                '21-23': { content: 'Juegos: PS4', class: 'fun' }
             },
             friday: {
-                '9-11': { content: 'Aprender Inglés (app)', class: 'morning language' },
-                '11-13': { content: 'Juegos: PS3', class: 'morning' },
+                '9-11': { content: 'Aprender Inglés (app)', class: 'studies' },
+                '11-13': { content: 'Juegos: PS3', class: 'fun' },
                 '13-15': { content: 'Trabajo', class: 'work' },
                 '15-17': { content: 'Trabajo', class: 'work' },
                 '17-19': { content: 'Trabajo', class: 'work' },
-                '19-21': { content: 'Juegos: Xbox 360', class: 'evening' }
+                '19-21': { content: 'Juegos: Xbox 360', class: 'fun' }
             },
             saturday: {
                 '9-11': { content: 'Trabajo (9:00-11:00)', class: 'work' },
                 '11-13': { content: 'Trabajo (11:00-13:00)', class: 'work' },
                 '13-15': { content: 'Trabajo (13:00-15:00)', class: 'work' },
                 '15-17': { content: 'Trabajo (15:00-17:00)', class: 'work' },
-                '19-21': { content: 'Juegos: Consola menos usada', class: 'weekend' },
-                '21-23': { content: 'Repaso de idiomas', class: 'weekend language' },
-                '23-1': { content: 'Tiempo libre', class: 'weekend' }
+                '19-21': { content: 'Juegos: Consola menos usada', class: 'fun' },
+                '21-23': { content: 'Repaso de idiomas', class: 'studies' },
+                '23-1': { content: 'Tiempo libre', class: 'fun' }
             },
             sunday: {
-                '9-11': { content: '1 hora de repaso de idiomas', class: 'weekend language' },
-                '11-13': { content: 'Limpieza/organización', class: 'weekend chores' },
-                '19-21': { content: 'Maratón de juegos o película', class: 'weekend' }
+                '9-11': { content: '1 hora de repaso de idiomas', class: 'studies' },
+                '11-13': { content: 'Limpieza/organización', class: 'responsibilities' },
+                '19-21': { content: 'Maratón de juegos o película', class: 'fun' }
             }
         };
 
@@ -601,14 +646,22 @@
         let selectedDay = 'monday';
         let selectedTime = '9-11';
         let selectedActivity = null;
-        let selectedColorClass = 'morning';
+        let selectedCategoryClass = 'responsibilities';
         let currentView = 'control'; // 'control' o 'schedule'
+        let newGroupCounter = 1;
+        const availableGroupClasses = ['new-group-1', 'new-group-2', 'new-group-3', 'new-group-4'];
+        const groupColors = [
+    { bg: '#b2ebf2', border: '#00bcd4', name: '' },
+    { bg: '#c8e6c9', border: '#4caf50', name: '' },
+    { bg: '#f0f4c3', border: '#cddc39', name: '' },
+    { bg: '#ffccbc', border: '#ff5722', name: '' }
+];
 
         // Elementos del DOM
         const daySelect = document.getElementById('day-select');
         const timeSelect = document.getElementById('time-select');
         const activityContent = document.getElementById('activity-content');
-        const colorOptions = document.querySelectorAll('.color-option');
+        const categoryOptions = document.querySelectorAll('.category-option');
         const colorPreview = document.getElementById('color-preview');
         const addBtn = document.getElementById('add-btn');
         const updateBtn = document.getElementById('update-btn');
@@ -619,6 +672,20 @@
         const scheduleView = document.getElementById('schedule-view');
         const scheduleDisplay = document.getElementById('schedule-display');
         const mobileScheduleDisplay = document.getElementById('mobile-schedule-display');
+        const legend = document.getElementById('schedule-legend');
+        
+        // Nuevos elementos para backup/restauración
+        const backupBtn = document.getElementById('backup-btn');
+        const restoreBtn = document.getElementById('restore-btn');
+        const clearBtn = document.getElementById('clear-btn');
+        const backupName = document.getElementById('backup-name');
+        const backupMessage = document.getElementById('backup-message');
+        
+        // Elementos para nuevo grupo
+        const addGroupBtn = document.getElementById('add-group-btn');
+        const newGroupForm = document.getElementById('new-group-form');
+        const newGroupName = document.getElementById('new-group-name');
+        const saveGroupBtn = document.getElementById('save-group-btn');
 
         // Inicializar la aplicación
         function init() {
@@ -626,9 +693,9 @@
             daySelect.addEventListener('change', handleDayChange);
             timeSelect.addEventListener('change', handleTimeChange);
             
-            // Eventos para los botones de color
-            colorOptions.forEach(option => {
-                option.addEventListener('click', handleColorSelect);
+            // Eventos para los botones de categoría
+            categoryOptions.forEach(option => {
+                option.addEventListener('click', handleCategorySelect);
             });
             
             // Eventos para los botones de acción
@@ -638,6 +705,15 @@
             
             // Evento para alternar vista
             toggleViewBtn.addEventListener('click', toggleView);
+            
+            // Eventos para backup/restauración
+            backupBtn.addEventListener('click', handleBackup);
+            restoreBtn.addEventListener('click', handleRestore);
+            clearBtn.addEventListener('click', handleClearData);
+            
+            // Eventos para nuevo grupo
+            addGroupBtn.addEventListener('click', toggleNewGroupForm);
+            saveGroupBtn.addEventListener('click', handleSaveNewGroup);
             
             // Cargar datos iniciales
             loadActivities();
@@ -661,6 +737,48 @@
             }
         }
 
+        // Mostrar/ocultar formulario para nuevo grupo
+        function toggleNewGroupForm() {
+            newGroupForm.style.display = newGroupForm.style.display === 'block' ? 'none' : 'block';
+            newGroupName.value = '';
+        }
+
+        // Manejar guardar nuevo grupo
+       function handleSaveNewGroup() {
+    const groupName = newGroupName.value.trim();
+    if (!groupName) return;
+    
+    if (newGroupCounter > 4) {
+        showMessage('Has alcanzado el límite de nuevos grupos (4)', 'error');
+        return;
+    }
+    
+    const groupClass = availableGroupClasses[newGroupCounter - 1];
+    const groupColor = groupColors[newGroupCounter - 1];
+    groupColor.name = groupName; // Guardar el nombre del grupo
+    
+    // Crear nuevo elemento de categoría
+    const newCategory = document.createElement('div');
+    newCategory.className = 'category-option';
+    newCategory.style.backgroundColor = groupColor.bg;
+    newCategory.style.borderLeft = `4px solid ${groupColor.border}`;
+    newCategory.dataset.class = groupClass;
+    newCategory.textContent = groupName;
+    newCategory.addEventListener('click', handleCategorySelect);
+    
+    // Añadir al contenedor de categorías
+    const categoryContainer = document.querySelector('.category-options');
+    categoryContainer.appendChild(newCategory);
+    
+    // Incrementar contador y resetear formulario
+    newGroupCounter++;
+    toggleNewGroupForm();
+    showMessage(`Nuevo grupo "${groupName}" creado`, 'success');
+    
+    // Actualizar el horario para mostrar la nueva categoría si es usada
+    renderSchedule();
+}
+
         // Manejar cambio de día
         function handleDayChange(e) {
             selectedDay = e.target.value;
@@ -674,13 +792,13 @@
             updateForm();
         }
 
-        // Manejar selección de color
-        function handleColorSelect(e) {
+        // Manejar selección de categoría
+        function handleCategorySelect(e) {
             const selectedOption = e.target;
-            selectedColorClass = selectedOption.dataset.class;
+            selectedCategoryClass = selectedOption.dataset.class;
             
             // Actualizar selección visual
-            colorOptions.forEach(option => {
+            document.querySelectorAll('.category-option').forEach(option => {
                 option.classList.remove('selected');
             });
             selectedOption.classList.add('selected');
@@ -726,10 +844,9 @@
             timeSelect.value = time;
             activityContent.value = activity.content;
             
-            // Encontrar y seleccionar el color correspondiente
-            const primaryClass = activity.class.split(' ')[0];
-            colorOptions.forEach(option => {
-                if (option.dataset.class === primaryClass) {
+            // Encontrar y seleccionar la categoría correspondiente
+            document.querySelectorAll('.category-option').forEach(option => {
+                if (option.dataset.class === activity.class) {
                     option.click();
                 }
             });
@@ -758,11 +875,12 @@
             
             scheduleData[selectedDay][selectedTime] = {
                 content: content,
-                class: selectedColorClass
+                class: selectedCategoryClass
             };
             
             loadActivities();
             resetForm();
+            renderSchedule();
         }
 
         // Manejar actualizar actividad
@@ -774,11 +892,12 @@
             
             scheduleData[selectedDay][selectedTime] = {
                 content: content,
-                class: selectedColorClass
+                class: selectedCategoryClass
             };
             
             loadActivities();
             resetForm();
+            renderSchedule();
         }
 
         // Manejar eliminar actividad
@@ -788,6 +907,7 @@
             delete scheduleData[selectedDay][selectedTime];
             loadActivities();
             resetForm();
+            renderSchedule();
         }
 
         // Actualizar el formulario con los datos actuales
@@ -801,10 +921,9 @@
             selectedActivity = scheduleData[selectedDay][selectedTime];
             activityContent.value = selectedActivity.content;
             
-            // Seleccionar el color correspondiente
-            const primaryClass = selectedActivity.class.split(' ')[0];
-            colorOptions.forEach(option => {
-                if (option.dataset.class === primaryClass) {
+            // Seleccionar la categoría correspondiente
+            document.querySelectorAll('.category-option').forEach(option => {
+                if (option.dataset.class === selectedActivity.class) {
                     option.click();
                 }
             });
@@ -817,8 +936,8 @@
             timeSelect.value = '9-11';
             selectedTime = '9-11';
             
-            // Seleccionar el primer color por defecto
-            colorOptions[0].click();
+            // Seleccionar la primera categoría por defecto
+            document.querySelector('.category-option').click();
         }
 
         // Formatear el horario para mostrar
@@ -840,58 +959,189 @@
 
         // Obtener color de fondo basado en la clase
         function getBackgroundColor(className) {
-            const classes = className.split(' ');
-            const primaryClass = classes[0];
-            
             const colorMap = {
-                'morning': '#e3f2fd',
-                'evening': '#e8f5e9',
-                'night': '#f3e5f5',
-                'weekend': '#fff3e0',
-                'language': '#ffecb3',
-                'chores': '#ffcdd2',
-                'movie': '#d1c4e9',
+                'responsibilities': '#ffcdd2',
+                'fun': '#d1c4e9',
+                'studies': '#e3f2fd',
                 'work': '#d7ccc8',
-                'new1': '#b2ebf2',
-                'new2': '#c8e6c9',
-                'new3': '#f0f4c3',
-                'new4': '#ffccbc'
+                'new-group-1': '#b2ebf2',
+                'new-group-2': '#c8e6c9',
+                'new-group-3': '#f0f4c3',
+                'new-group-4': '#ffccbc'
             };
             
-            return colorMap[primaryClass] || '#f9f9f9';
+            return colorMap[className] || '#f9f9f9';
         }
 
         // Obtener color del borde basado en la clase
         function getBorderColor(className) {
-            const classes = className.split(' ');
-            const primaryClass = classes[0];
-            
             const colorMap = {
-                'morning': '4px solid #2196f3',
-                'evening': '4px solid #4caf50',
-                'night': '4px solid #9c27b0',
-                'weekend': '4px solid #ff9800',
-                'language': '4px solid #ffc107',
-                'chores': '4px solid #f44336',
-                'movie': '4px solid #673ab7',
+                'responsibilities': '4px solid #f44336',
+                'fun': '4px solid #673ab7',
+                'studies': '4px solid #2196f3',
                 'work': '4px solid #5d4037',
-                'new1': '4px solid #00bcd4',
-                'new2': '4px solid #4caf50',
-                'new3': '4px solid #cddc39',
-                'new4': '4px solid #ff5722'
+                'new-group-1': '4px solid #00bcd4',
+                'new-group-2': '4px solid #4caf50',
+                'new-group-3': '4px solid #cddc39',
+                'new-group-4': '4px solid #ff5722'
             };
             
-            return colorMap[primaryClass] || '4px solid #ddd';
+            return colorMap[className] || '4px solid #ddd';
         }
 
         // Renderizar el horario visual
         function renderSchedule() {
-            // Renderizar horario de escritorio
-            renderDesktopSchedule();
+            // Primero determinar qué categorías están en uso
+            const usedCategories = new Set();
             
-            // Renderizar horario móvil
+            // Analizar todas las actividades para encontrar categorías usadas
+            Object.values(scheduleData).forEach(day => {
+                Object.values(day).forEach(activity => {
+                    usedCategories.add(activity.class);
+                });
+            });
+            
+            // Renderizar la leyenda solo con categorías usadas
+            renderLegend(usedCategories);
+            
+            // Renderizar horarios
+            renderDesktopSchedule();
             renderMobileSchedule();
         }
+
+        // Renderizar la leyenda con categorías usadas
+        function renderLegend(usedCategories) {
+            legend.innerHTML = '';
+            
+            // Mapeo de categorías a nombres y colores
+            const categoryMap = {
+                'responsibilities': {
+                    name: 'Responsabilidades',
+                    bg: '#ffcdd2',
+                    border: '#f44336'
+                },
+                'fun': {
+                    name: 'Diversión',
+                    bg: '#d1c4e9',
+                    border: '#673ab7'
+                },
+                'studies': {
+                    name: 'Estudios',
+                    bg: '#e3f2fd',
+                    border: '#2196f3'
+                },
+                'work': {
+                    name: 'Trabajos',
+                    bg: '#d7ccc8',
+                    border: '#5d4037'
+                },
+                'new-group-1': {
+    name: groupColors[0].name || 'Nuevo Grupo 1',
+    bg: '#b2ebf2',
+    border: '#00bcd4'
+},
+'new-group-2': {
+    name: groupColors[1].name || 'Nuevo Grupo 2',
+    bg: '#c8e6c9',
+    border: '#4caf50'
+},
+'new-group-3': {
+    name: groupColors[2].name || 'Nuevo Grupo 3',
+    bg: '#f0f4c3',
+    border: '#cddc39'
+},
+'new-group-4': {
+    name: groupColors[3].name || 'Nuevo Grupo 4',
+    bg: '#ffccbc',
+    border: '#ff5722'
+}
+            };
+            
+            // Crear elementos de leyenda solo para categorías usadas
+            Array.from(usedCategories).forEach(categoryClass => {
+                const categoryInfo = categoryMap[categoryClass];
+                if (!categoryInfo) return;
+                
+                const legendItem = document.createElement('div');
+                legendItem.className = 'legend-item filter-category';
+                legendItem.dataset.category = categoryClass;
+                legendItem.innerHTML = `
+                    <div class="legend-color" style="background-color: ${categoryInfo.bg}; border-color: ${categoryInfo.border};"></div>
+                    <span>${categoryInfo.name}</span>
+                `;
+                
+                // Añadir evento de clic para filtrar
+                legendItem.addEventListener('click', () => {
+                    toggleCategoryFilter(categoryClass);
+                });
+                
+                legend.appendChild(legendItem);
+            });
+            
+            // Añadir opción para mostrar todas las categorías
+            const allCategoriesItem = document.createElement('div');
+            allCategoriesItem.className = 'legend-item filter-category active';
+            allCategoriesItem.dataset.category = 'all';
+            allCategoriesItem.innerHTML = `
+                <div class="legend-color" style="background-color: #ffffff; border-color: #2c3e50;"></div>
+                <span>Todas las categorías</span>
+            `;
+            
+            allCategoriesItem.addEventListener('click', () => {
+                toggleCategoryFilter('all');
+            });
+            
+            legend.appendChild(allCategoriesItem);
+        }
+
+        // Alternar el filtro de categoría
+        function toggleCategoryFilter(categoryClass) {
+            // Actualizar estado activo en la leyenda
+            document.querySelectorAll('.filter-category').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.category === categoryClass) {
+                    item.classList.add('active');
+                }
+            });
+            
+            // Aplicar filtro a los horarios
+            filterScheduleByCategory(categoryClass);
+        }
+
+        // Filtrar el horario por categoría
+        function filterScheduleByCategory(categoryClass) {
+    // Versión escritorio
+    document.querySelectorAll('#schedule-display .activity, #schedule-display .empty-slot').forEach(slot => {
+        if (categoryClass === 'all') {
+            slot.style.display = 'flex';
+            slot.style.visibility = 'visible';
+        } else {
+            if (slot.classList.contains('empty-slot')) {
+                // Mantener los espacios ocupados pero invisibles
+                slot.style.display = 'flex';
+                slot.style.visibility = 'hidden';
+            } else {
+                if (slot.classList.contains(categoryClass)) {
+                    slot.style.display = 'flex';
+                    slot.style.visibility = 'visible';
+                } else {
+                    slot.style.display = 'flex';
+                    slot.style.visibility = 'hidden';
+                }
+            }
+        }
+    });
+
+    
+    // Versión móvil - corregido
+    document.querySelectorAll('#mobile-schedule-display .mobile-time-slot').forEach(slot => {
+        if (categoryClass === 'all') {
+            slot.style.display = 'flex';
+        } else {
+            slot.style.display = slot.classList.contains(categoryClass) ? 'flex' : 'none';
+        }
+    });
+}
 
         // Renderizar horario de escritorio
         function renderDesktopSchedule() {
@@ -965,17 +1215,17 @@
                 
                 // Crear elementos para cada slot
                 dayActivities.forEach((activity, index) => {
-                    const slot = document.createElement('div');
-                    
-                    if (activity) {
-                        slot.className = `activity ${activity.class}`;
-                        slot.textContent = activity.content;
-                    } else {
-                        slot.className = 'empty-slot';
-                    }
-                    
-                    dayColumn.appendChild(slot);
-                });
+    const slot = document.createElement('div');
+    
+    if (activity) {
+    slot.className = `activity ${activity.class}`;
+    slot.textContent = activity.content;
+} else {
+    slot.className = 'empty-slot';
+}
+    
+    dayColumn.appendChild(slot);
+});
                 
                 scheduleDisplay.appendChild(dayColumn);
             });
@@ -983,68 +1233,157 @@
 
         // Renderizar horario móvil
         function renderMobileSchedule() {
-            mobileScheduleDisplay.innerHTML = '';
-            
-            const days = [
-                { id: 'monday', name: 'Lunes' },
-                { id: 'tuesday', name: 'Martes' },
-                { id: 'wednesday', name: 'Miércoles' },
-                { id: 'thursday', name: 'Jueves' },
-                { id: 'friday', name: 'Viernes' },
-                { id: 'saturday', name: 'Sábado' },
-                { id: 'sunday', name: 'Domingo' }
-            ];
-            
-            days.forEach(day => {
-                const dayElement = document.createElement('div');
-                dayElement.className = 'mobile-day';
-                
-                // Encabezado del día
-                const dayHeader = document.createElement('div');
-                dayHeader.className = 'mobile-day-header';
-                dayHeader.textContent = day.name;
-                dayElement.appendChild(dayHeader);
-                
-                // Verificar si hay actividades para este día
-                if (!scheduleData[day.id] || Object.keys(scheduleData[day.id]).length === 0) {
-                    const noActivities = document.createElement('div');
-                    noActivities.className = 'no-activities';
-                    noActivities.textContent = 'No hay actividades programadas';
-                    dayElement.appendChild(noActivities);
-                } else {
-                    // Ordenar las actividades por hora
-                    const sortedTimes = Object.keys(scheduleData[day.id]).sort((a, b) => {
-                        // Convertir los rangos de tiempo a números para ordenar
-                        const startA = parseInt(a.split('-')[0]);
-                        const startB = parseInt(b.split('-')[0]);
-                        return startA - startB;
-                    });
-                    
-                    // Crear elementos para cada actividad
-                    sortedTimes.forEach(time => {
-                        const activity = scheduleData[day.id][time];
-                        
-                        const timeSlot = document.createElement('div');
-                        timeSlot.className = 'mobile-time-slot';
-                        timeSlot.style.backgroundColor = getBackgroundColor(activity.class);
-                        timeSlot.style.borderLeft = getBorderColor(activity.class);
-                        
-                        const timeElement = document.createElement('div');
-                        timeElement.className = 'mobile-time';
-                        timeElement.textContent = formatTime(time);
-                        
-                        const activityElement = document.createElement('div');
-                        activityElement.className = 'mobile-activity';
-                        activityElement.textContent = activity.content;
-                        
-                        timeSlot.appendChild(timeElement);
-                        timeSlot.appendChild(activityElement);
-                        dayElement.appendChild(timeSlot);
-                    });
-                }
-                
-                mobileScheduleDisplay.appendChild(dayElement);
+    mobileScheduleDisplay.innerHTML = '';
+    
+    const days = [
+        { id: 'monday', name: 'Lunes' },
+        { id: 'tuesday', name: 'Martes' },
+        { id: 'wednesday', name: 'Miércoles' },
+        { id: 'thursday', name: 'Jueves' },
+        { id: 'friday', name: 'Viernes' },
+        { id: 'saturday', name: 'Sábado' },
+        { id: 'sunday', name: 'Domingo' }
+    ];
+    
+    days.forEach(day => {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'mobile-day';
+        
+        // Encabezado del día
+        const dayHeader = document.createElement('div');
+        dayHeader.className = 'mobile-day-header';
+        dayHeader.textContent = day.name;
+        dayElement.appendChild(dayHeader);
+        
+        // Verificar si hay actividades para este día
+        if (!scheduleData[day.id] || Object.keys(scheduleData[day.id]).length === 0) {
+            const noActivities = document.createElement('div');
+            noActivities.className = 'no-activities';
+            noActivities.textContent = 'No hay actividades programadas';
+            dayElement.appendChild(noActivities);
+        } else {
+            // Ordenar las actividades por hora
+            const sortedTimes = Object.keys(scheduleData[day.id]).sort((a, b) => {
+                const startA = parseInt(a.split('-')[0]);
+                const startB = parseInt(b.split('-')[0]);
+                return startA - startB;
             });
+            
+            // Crear elementos para cada actividad
+            sortedTimes.forEach(time => {
+                const activity = scheduleData[day.id][time];
+                
+                const timeSlot = document.createElement('div');
+                timeSlot.className = `mobile-time-slot ${activity.class}`; // Añadir clase de categoría
+                timeSlot.style.backgroundColor = getBackgroundColor(activity.class);
+                timeSlot.style.borderLeft = getBorderColor(activity.class);
+                
+                const timeElement = document.createElement('div');
+                timeElement.className = 'mobile-time';
+                timeElement.textContent = formatTime(time);
+                
+                const activityElement = document.createElement('div');
+                activityElement.className = 'mobile-activity';
+                activityElement.textContent = activity.content;
+                
+                timeSlot.appendChild(timeElement);
+                timeSlot.appendChild(activityElement);
+                dayElement.appendChild(timeSlot);
+            });
+        }
+        
+        mobileScheduleDisplay.appendChild(dayElement);
+    });
+}
+
+        // Manejar creación de backup
+        function handleBackup() {
+            const backupData = {
+                name: backupName.value.trim() || 'Backup sin nombre',
+                date: new Date().toISOString(),
+                schedule: scheduleData
+            };
+            
+            const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `horario_backup_${new Date().toISOString().slice(0, 10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showMessage(`Backup creado exitosamente como "${backupData.name}"`, 'success');
+        }
+
+        // Manejar restauración desde backup
+        function handleRestore() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = e => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = event => {
+                    try {
+                        const backupData = JSON.parse(event.target.result);
+                        
+                        if (!backupData.schedule) {
+                            throw new Error('El archivo no contiene datos válidos de horario');
+                        }
+                        
+                        // Confirmar antes de sobrescribir
+                        if (confirm(`¿Restaurar backup "${backupData.name}" creado el ${new Date(backupData.date).toLocaleDateString()}? Esto sobrescribirá tu horario actual.`)) {
+                            scheduleData = backupData.schedule;
+                            loadActivities();
+                            renderSchedule();
+                            showMessage(`Horario restaurado desde "${backupData.name}"`, 'success');
+                        }
+                    } catch (error) {
+                        showMessage(`Error al restaurar: ${error.message}`, 'error');
+                    }
+                };
+                reader.onerror = () => {
+                    showMessage('Error al leer el archivo', 'error');
+                };
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+
+        // Manejar borrado de todos los datos
+        function handleClearData() {
+            if (confirm('¿Estás seguro de que deseas borrar TODOS los datos del horario? Esta acción no se puede deshacer.')) {
+                scheduleData = {
+                    monday: {},
+                    tuesday: {},
+                    wednesday: {},
+                    thursday: {},
+                    friday: {},
+                    saturday: {},
+                    sunday: {}
+                };
+                
+                loadActivities();
+                renderSchedule();
+                showMessage('Todos los datos han sido borrados', 'success');
+            }
+        }
+
+        // Mostrar mensaje de estado
+        function showMessage(message, type) {
+            backupMessage.textContent = message;
+            backupMessage.style.color = type === 'success' ? '#27ae60' : '#e74c3c';
+            
+            setTimeout(() => {
+                backupMessage.textContent = '';
+            }, 5000);
         }
 
         // Iniciar la aplicación cuando el DOM esté listo
