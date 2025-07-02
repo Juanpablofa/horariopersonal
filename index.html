@@ -373,6 +373,68 @@
             font-weight: bold;
         }
 
+/* Estilos para el resumen */
+.summary-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-top: 30px;
+}
+
+.summary-container h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.summary-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.summary-category {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.summary-hours {
+    font-size: 24px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.summary-label {
+    font-size: 12px;
+    color: #777;
+    text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+    .summary-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
         @media (max-width: 768px) {
             /* Ajustes generales para móvil */
             body {
@@ -577,6 +639,14 @@
             <div class="mobile-schedule" id="mobile-schedule-display">
                 <!-- El horario móvil se generará dinámicamente aquí -->
             </div>
+
+	    <div class="summary-container" id="category-summary">
+    <h3>Resumen de Horas por Categoría</h3>
+    <div class="summary-grid" id="summary-grid">
+        <!-- El resumen se generará dinámicamente aquí -->
+    </div>
+</div>
+
         </div>
     </div>
 
@@ -991,23 +1061,26 @@
 
         // Renderizar el horario visual
         function renderSchedule() {
-            // Primero determinar qué categorías están en uso
-            const usedCategories = new Set();
-            
-            // Analizar todas las actividades para encontrar categorías usadas
-            Object.values(scheduleData).forEach(day => {
-                Object.values(day).forEach(activity => {
-                    usedCategories.add(activity.class);
-                });
-            });
-            
-            // Renderizar la leyenda solo con categorías usadas
-            renderLegend(usedCategories);
-            
-            // Renderizar horarios
-            renderDesktopSchedule();
-            renderMobileSchedule();
-        }
+    // Primero determinar qué categorías están en uso
+    const usedCategories = new Set();
+    
+    // Analizar todas las actividades para encontrar categorías usadas
+    Object.values(scheduleData).forEach(day => {
+        Object.values(day).forEach(activity => {
+            usedCategories.add(activity.class);
+        });
+    });
+    
+    // Renderizar la leyenda solo con categorías usadas
+    renderLegend(usedCategories);
+    
+    // Renderizar horarios
+    renderDesktopSchedule();
+    renderMobileSchedule();
+    
+    // Renderizar resumen de horas por categoría
+    renderCategorySummary();
+}
 
         // Renderizar la leyenda con categorías usadas
         function renderLegend(usedCategories) {
@@ -1096,17 +1169,20 @@
 
         // Alternar el filtro de categoría
         function toggleCategoryFilter(categoryClass) {
-            // Actualizar estado activo en la leyenda
-            document.querySelectorAll('.filter-category').forEach(item => {
-                item.classList.remove('active');
-                if (item.dataset.category === categoryClass) {
-                    item.classList.add('active');
-                }
-            });
-            
-            // Aplicar filtro a los horarios
-            filterScheduleByCategory(categoryClass);
+    // Actualizar estado activo en la leyenda
+    document.querySelectorAll('.filter-category').forEach(item => {
+        item.classList.remove('active');
+        if (item.dataset.category === categoryClass) {
+            item.classList.add('active');
         }
+    });
+    
+    // Aplicar filtro a los horarios
+    filterScheduleByCategory(categoryClass);
+    
+    // Actualizar el resumen con el filtro aplicado
+    renderCategorySummary();
+}
 
         // Filtrar el horario por categoría
         function filterScheduleByCategory(categoryClass) {
@@ -1385,6 +1461,95 @@
                 backupMessage.textContent = '';
             }, 5000);
         }
+
+
+// Función para calcular y mostrar el resumen de horas por categoría
+function renderCategorySummary() {
+    const summaryContainer = document.getElementById('category-summary');
+    const summaryGrid = document.getElementById('summary-grid');
+    summaryGrid.innerHTML = '';
+    
+    // Objeto para acumular horas por categoría
+    const categoryHours = {};
+    
+    // Calcular horas para cada categoría
+    Object.values(scheduleData).forEach(day => {
+        Object.entries(day).forEach(([time, activity]) => {
+            const hours = calculateHours(time);
+            if (!categoryHours[activity.class]) {
+                categoryHours[activity.class] = 0;
+            }
+            categoryHours[activity.class] += hours;
+        });
+    });
+    
+    // Mapeo de categorías a nombres
+    const categoryMap = {
+        'responsibilities': 'Responsabilidades',
+        'fun': 'Diversión',
+        'studies': 'Estudios',
+        'work': 'Trabajos',
+        'new-group-1': groupColors[0].name || 'Nuevo Grupo 1',
+        'new-group-2': groupColors[1].name || 'Nuevo Grupo 2',
+        'new-group-3': groupColors[2].name || 'Nuevo Grupo 3',
+        'new-group-4': groupColors[3].name || 'Nuevo Grupo 4'
+    };
+    
+    // Crear elementos de resumen
+    Object.entries(categoryHours).forEach(([categoryClass, hours]) => {
+        const categoryInfo = {
+            name: categoryMap[categoryClass] || categoryClass,
+            bg: getBackgroundColor(categoryClass),
+            border: getBorderColor(categoryClass)
+        };
+        
+        const summaryItem = document.createElement('div');
+        summaryItem.className = 'summary-item';
+        
+        const categoryElement = document.createElement('div');
+        categoryElement.className = 'summary-category';
+        
+        const colorBox = document.createElement('div');
+        colorBox.className = 'legend-color';
+        colorBox.style.backgroundColor = categoryInfo.bg;
+        colorBox.style.borderLeft = categoryInfo.border;
+        
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = categoryInfo.name;
+        
+        categoryElement.appendChild(colorBox);
+        categoryElement.appendChild(nameSpan);
+        
+        const hoursElement = document.createElement('div');
+        hoursElement.className = 'summary-hours';
+        hoursElement.textContent = hours;
+        
+        const labelElement = document.createElement('div');
+        labelElement.className = 'summary-label';
+        labelElement.textContent = 'horas';
+        
+        summaryItem.appendChild(categoryElement);
+        summaryItem.appendChild(hoursElement);
+        summaryItem.appendChild(labelElement);
+        
+        summaryGrid.appendChild(summaryItem);
+    });
+    
+    // Mostrar mensaje si no hay actividades
+    if (Object.keys(categoryHours).length === 0) {
+        summaryGrid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #777;">No hay actividades registradas</p>';
+    }
+}
+
+// Función auxiliar para calcular horas de un slot de tiempo
+function calculateHours(timeKey) {
+    const [start, end] = timeKey.split('-').map(Number);
+    // Manejar el caso de horas que pasan la medianoche (ej. 23-1)
+    const hours = end > start ? end - start : (24 - start) + end;
+    return hours;
+}
+
+
 
         // Iniciar la aplicación cuando el DOM esté listo
         document.addEventListener('DOMContentLoaded', init);
