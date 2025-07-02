@@ -1,1 +1,869 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control y Visualización de Horario</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .view-toggle {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .toggle-btn {
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .toggle-btn:hover {
+            background-color: #1a252f;
+        }
+        
+        /* Estilos del panel de control */
+        .control-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .control-panel {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select, input, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #1a252f;
+        }
+        .preview {
+            width: 100%;
+            height: 30px;
+            border-radius: 4px;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
+        .activity-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+        }
+        .activity-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .activity-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .buttons-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .delete-btn {
+            background-color: #e74c3c;
+        }
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+        .update-btn {
+            background-color: #3498db;
+        }
+        .update-btn:hover {
+            background-color: #2980b9;
+        }
+        .add-btn {
+            background-color: #2ecc71;
+        }
+        .add-btn:hover {
+            background-color: #27ae60;
+        }
+        .color-options {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .color-option {
+            height: 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        .color-option.selected {
+            border-color: #2c3e50;
+        }
+        
+        /* Estilos del horario visual */
+        .schedule-container {
+            display: none; /* Inicialmente oculto */
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .schedule {
+            display: grid;
+            grid-template-columns: 100px repeat(7, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .time-column {
+            display: grid;
+            grid-template-rows: 60px repeat(10, 1fr);
+            gap: 10px;
+        }
+        .time-slot {
+            font-size: 14px;
+            text-align: right;
+            padding-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            color: #555;
+        }
+        .day-column {
+            display: grid;
+            grid-template-rows: 60px repeat(10, 1fr);
+            gap: 10px;
+        }
+        .day-header {
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            background-color: #2c3e50;
+            color: white;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .activity {
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .morning {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196f3;
+        }
+        .evening {
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
+        }
+        .night {
+            background-color: #f3e5f5;
+            border-left: 4px solid #9c27b0;
+        }
+        .weekend {
+            background-color: #fff3e0;
+            border-left: 4px solid #ff9800;
+        }
+        .language {
+            background-color: #ffecb3;
+            border-left: 4px solid #ffc107;
+        }
+        .chores {
+            background-color: #ffcdd2;
+            border-left: 4px solid #f44336;
+        }
+        .movie {
+            background-color: #d1c4e9;
+            border-left: 4px solid #673ab7;
+        }
+        .work {
+            background-color: #d7ccc8;
+            border-left: 4px solid #5d4037;
+        }
+        .new1 {
+            background-color: #b2ebf2;
+            border-left: 4px solid #00bcd4;
+        }
+        .new2 {
+            background-color: #c8e6c9;
+            border-left: 4px solid #4caf50;
+        }
+        .new3 {
+            background-color: #f0f4c3;
+            border-left: 4px solid #cddc39;
+        }
+        .new4 {
+            background-color: #ffccbc;
+            border-left: 4px solid #ff5722;
+        }
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            border-radius: 3px;
+            border-left: 4px solid;
+        }
+        .empty-slot {
+            background-color: #f9f9f9;
+            border-left: 4px solid #ddd;
+        }
+        @media (max-width: 768px) {
+            .control-container {
+                grid-template-columns: 1fr;
+            }
+            .schedule {
+                grid-template-columns: 80px repeat(7, 1fr);
+                font-size: 12px;
+            }
+            .activity, .time-slot {
+                font-size: 12px;
+                padding: 8px 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <h1>Panel de Control y Visualización de Horario</h1>
+        
+        <div class="view-toggle">
+            <button id="toggle-view" class="toggle-btn">Ver Horario</button>
+        </div>
+        
+        <!-- Panel de control -->
+        <div id="control-view">
+            <div class="control-container">
+                <div class="control-panel">
+                    <h3>Editar Actividades</h3>
+                    
+                    <div class="form-group">
+                        <label for="day-select">Día:</label>
+                        <select id="day-select">
+                            <option value="monday">Lunes</option>
+                            <option value="tuesday">Martes</option>
+                            <option value="wednesday">Miércoles</option>
+                            <option value="thursday">Jueves</option>
+                            <option value="friday">Viernes</option>
+                            <option value="saturday">Sábado</option>
+                            <option value="sunday">Domingo</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="time-select">Horario:</label>
+                        <select id="time-select">
+                            <option value="7-9">7:00 - 9:00</option>
+                            <option value="9-11">9:00 - 11:00</option>
+                            <option value="11-13">11:00 - 13:00</option>
+                            <option value="13-15">13:00 - 15:00</option>
+                            <option value="15-17">15:00 - 17:00</option>
+                            <option value="17-19">17:00 - 19:00</option>
+                            <option value="19-21">19:00 - 21:00</option>
+                            <option value="21-23">21:00 - 23:00</option>
+                            <option value="23-1">23:00 - 1:00</option>
+                            <option value="1-3">1:00 - 3:00</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="activity-content">Contenido de la actividad:</label>
+                        <textarea id="activity-content" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Categoría/Color:</label>
+                        <div class="color-options">
+                            <div class="color-option selected" style="background-color: #e3f2fd; border-left: 4px solid #2196f3;" data-class="morning"></div>
+                            <div class="color-option" style="background-color: #e8f5e9; border-left: 4px solid #4caf50;" data-class="evening"></div>
+                            <div class="color-option" style="background-color: #f3e5f5; border-left: 4px solid #9c27b0;" data-class="night"></div>
+                            <div class="color-option" style="background-color: #fff3e0; border-left: 4px solid #ff9800;" data-class="weekend"></div>
+                            <div class="color-option" style="background-color: #ffecb3; border-left: 4px solid #ffc107;" data-class="language"></div>
+                            <div class="color-option" style="background-color: #ffcdd2; border-left: 4px solid #f44336;" data-class="chores"></div>
+                            <div class="color-option" style="background-color: #d1c4e9; border-left: 4px solid #673ab7;" data-class="movie"></div>
+                            <div class="color-option" style="background-color: #d7ccc8; border-left: 4px solid #5d4037;" data-class="work"></div>
+                            <div class="color-option" style="background-color: #b2ebf2; border-left: 4px solid #00bcd4;" data-class="new1"></div>
+                            <div class="color-option" style="background-color: #c8e6c9; border-left: 4px solid #4caf50;" data-class="new2"></div>
+                            <div class="color-option" style="background-color: #f0f4c3; border-left: 4px solid #cddc39;" data-class="new3"></div>
+                            <div class="color-option" style="background-color: #ffccbc; border-left: 4px solid #ff5722;" data-class="new4"></div>
+                        </div>
+                        <div id="color-preview" class="preview" style="background-color: #e3f2fd; border-left: 4px solid #2196f3;">
+                            Vista previa del color
+                        </div>
+                    </div>
+                    
+                    <div class="buttons-group">
+                        <button id="add-btn" class="add-btn">Añadir Actividad</button>
+                        <button id="update-btn" class="update-btn">Actualizar Actividad</button>
+                        <button id="delete-btn" class="delete-btn">Eliminar Actividad</button>
+                    </div>
+                </div>
+                
+                <div class="control-panel">
+                    <h3>Actividades Existentes</h3>
+                    <div class="activity-list" id="activity-list">
+                        <!-- Las actividades se cargarán aquí dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Visualización del horario -->
+        <div id="schedule-view" class="schedule-container">
+            <h2>Mi Cronograma Semanal de Entretenimiento y Aprendizaje</h2>
+            
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #e3f2fd; border-color: #2196f3;"></div>
+                    <span>Mañana (7am-12pm)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #e8f5e9; border-color: #4caf50;"></div>
+                    <span>Tarde/Noche (6pm-2am)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #ffecb3; border-color: #ffc107;"></div>
+                    <span>Aprendizaje de idiomas</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #ffcdd2; border-color: #f44336;"></div>
+                    <span>Tareas domésticas</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #d1c4e9; border-color: #673ab7;"></div>
+                    <span>Película</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #fff3e0; border-color: #ff9800;"></div>
+                    <span>Fin de semana</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #d7ccc8; border-color: #5d4037;"></div>
+                    <span>Trabajo</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #b2ebf2; border-color: #00bcd4;"></div>
+                    <span>Nueva Categoría 1</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #f0f4c3; border-color: #cddc39;"></div>
+                    <span>Nueva Categoría 2</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #ffccbc; border-color: #ff5722;"></div>
+                    <span>Nueva Categoría 3</span>
+                </div>
+            </div>
+            
+            <div class="schedule" id="schedule-display">
+                <!-- El horario se generará dinámicamente aquí -->
+            </div>
+        </div>
+    </div>
 
+    <script>
+        // Datos iniciales del horario
+        const scheduleData = {
+            monday: {
+                '9-11': { content: 'Aprender Inglés (app)', class: 'morning language' },
+                '11-13': { content: 'Juegos: PS4', class: 'morning' },
+                '13-15': { content: 'Trabajo', class: 'work' },
+                '15-17': { content: 'Trabajo', class: 'work' },
+                '17-19': { content: 'Trabajo', class: 'work' },
+                '19-21': { content: 'Limpiar segundo piso', class: 'evening chores' },
+                '21-23': { content: 'Juegos: Nintendo Wii', class: 'evening' }
+            },
+            tuesday: {
+                '9-11': { content: 'Aprender Chino (app)', class: 'morning language' },
+                '11-13': { content: 'Juegos: Nintendo Wii', class: 'morning' },
+                '13-15': { content: 'Trabajo', class: 'work' },
+                '15-17': { content: 'Trabajo', class: 'work' },
+                '17-19': { content: 'Trabajo', class: 'work' },
+                '19-21': { content: 'Arreglar accesorios', class: 'evening chores' },
+                '21-23': { content: 'Juegos: PS3', class: 'evening' }
+            },
+            wednesday: {
+                '9-11': { content: 'Aprender Inglés (app)', class: 'morning language' },
+                '11-13': { content: 'Juegos: Xbox 360', class: 'morning' },
+                '13-15': { content: 'Trabajo', class: 'work' },
+                '15-17': { content: 'Trabajo', class: 'work' },
+                '17-19': { content: 'Trabajo', class: 'work' },
+                '19-21': { content: 'Ver 1 película', class: 'evening movie' }
+            },
+            thursday: {
+                '9-11': { content: 'Aprender Chino (app)', class: 'morning language' },
+                '11-13': { content: 'Juegos: Consola Retro', class: 'morning' },
+                '13-15': { content: 'Trabajo', class: 'work' },
+                '15-17': { content: 'Trabajo', class: 'work' },
+                '17-19': { content: 'Trabajo', class: 'work' },
+                '19-21': { content: 'Limpiar cosas personales', class: 'evening chores' },
+                '21-23': { content: 'Juegos: PS4', class: 'evening' }
+            },
+            friday: {
+                '9-11': { content: 'Aprender Inglés (app)', class: 'morning language' },
+                '11-13': { content: 'Juegos: PS3', class: 'morning' },
+                '13-15': { content: 'Trabajo', class: 'work' },
+                '15-17': { content: 'Trabajo', class: 'work' },
+                '17-19': { content: 'Trabajo', class: 'work' },
+                '19-21': { content: 'Juegos: Xbox 360', class: 'evening' }
+            },
+            saturday: {
+                '9-11': { content: 'Trabajo (9:00-11:00)', class: 'work' },
+                '11-13': { content: 'Trabajo (11:00-13:00)', class: 'work' },
+                '13-15': { content: 'Trabajo (13:00-15:00)', class: 'work' },
+                '15-17': { content: 'Trabajo (15:00-17:00)', class: 'work' },
+                '19-21': { content: 'Juegos: Consola menos usada', class: 'weekend' },
+                '21-23': { content: 'Repaso de idiomas', class: 'weekend language' },
+                '23-1': { content: 'Tiempo libre', class: 'weekend' }
+            },
+            sunday: {
+                '9-11': { content: '1 hora de repaso de idiomas', class: 'weekend language' },
+                '11-13': { content: 'Limpieza/organización', class: 'weekend chores' },
+                '19-21': { content: 'Maratón de juegos o película', class: 'weekend' }
+            }
+        };
+
+        // Variables para el control
+        let selectedDay = 'monday';
+        let selectedTime = '9-11';
+        let selectedActivity = null;
+        let selectedColorClass = 'morning';
+        let currentView = 'control'; // 'control' o 'schedule'
+
+        // Elementos del DOM
+        const daySelect = document.getElementById('day-select');
+        const timeSelect = document.getElementById('time-select');
+        const activityContent = document.getElementById('activity-content');
+        const colorOptions = document.querySelectorAll('.color-option');
+        const colorPreview = document.getElementById('color-preview');
+        const addBtn = document.getElementById('add-btn');
+        const updateBtn = document.getElementById('update-btn');
+        const deleteBtn = document.getElementById('delete-btn');
+        const activityList = document.getElementById('activity-list');
+        const toggleViewBtn = document.getElementById('toggle-view');
+        const controlView = document.getElementById('control-view');
+        const scheduleView = document.getElementById('schedule-view');
+        const scheduleDisplay = document.getElementById('schedule-display');
+
+        // Inicializar la aplicación
+        function init() {
+            // Cargar eventos
+            daySelect.addEventListener('change', handleDayChange);
+            timeSelect.addEventListener('change', handleTimeChange);
+            
+            // Eventos para los botones de color
+            colorOptions.forEach(option => {
+                option.addEventListener('click', handleColorSelect);
+            });
+            
+            // Eventos para los botones de acción
+            addBtn.addEventListener('click', handleAddActivity);
+            updateBtn.addEventListener('click', handleUpdateActivity);
+            deleteBtn.addEventListener('click', handleDeleteActivity);
+            
+            // Evento para alternar vista
+            toggleViewBtn.addEventListener('click', toggleView);
+            
+            // Cargar datos iniciales
+            loadActivities();
+            updateForm();
+            renderSchedule();
+        }
+
+        // Alternar entre vistas
+        function toggleView() {
+            if (currentView === 'control') {
+                currentView = 'schedule';
+                controlView.style.display = 'none';
+                scheduleView.style.display = 'block';
+                toggleViewBtn.textContent = 'Volver al Panel de Control';
+                renderSchedule(); // Actualizar el horario antes de mostrar
+            } else {
+                currentView = 'control';
+                controlView.style.display = 'block';
+                scheduleView.style.display = 'none';
+                toggleViewBtn.textContent = 'Ver Horario';
+            }
+        }
+
+        // Manejar cambio de día
+        function handleDayChange(e) {
+            selectedDay = e.target.value;
+            loadActivities();
+            updateForm();
+        }
+
+        // Manejar cambio de horario
+        function handleTimeChange(e) {
+            selectedTime = e.target.value;
+            updateForm();
+        }
+
+        // Manejar selección de color
+        function handleColorSelect(e) {
+            const selectedOption = e.target;
+            selectedColorClass = selectedOption.dataset.class;
+            
+            // Actualizar selección visual
+            colorOptions.forEach(option => {
+                option.classList.remove('selected');
+            });
+            selectedOption.classList.add('selected');
+            
+            // Actualizar vista previa
+            colorPreview.style.backgroundColor = selectedOption.style.backgroundColor;
+            colorPreview.style.borderLeft = selectedOption.style.borderLeft;
+        }
+
+        // Cargar actividades para el día seleccionado
+        function loadActivities() {
+            activityList.innerHTML = '';
+            const dayActivities = scheduleData[selectedDay];
+            
+            if (!dayActivities) return;
+            
+            Object.keys(dayActivities).forEach(time => {
+                const activity = dayActivities[time];
+                const activityItem = document.createElement('div');
+                activityItem.className = 'activity-item';
+                activityItem.style.backgroundColor = getBackgroundColor(activity.class);
+                activityItem.style.borderLeft = getBorderColor(activity.class);
+                
+                activityItem.innerHTML = `
+                    <strong>${formatTime(time)}</strong><br>
+                    ${activity.content}
+                `;
+                
+                activityItem.addEventListener('click', () => {
+                    selectActivity(time, activity);
+                });
+                
+                activityList.appendChild(activityItem);
+            });
+        }
+
+        // Seleccionar una actividad para editar
+        function selectActivity(time, activity) {
+            selectedTime = time;
+            selectedActivity = activity;
+            
+            // Actualizar selects
+            timeSelect.value = time;
+            activityContent.value = activity.content;
+            
+            // Encontrar y seleccionar el color correspondiente
+            const primaryClass = activity.class.split(' ')[0];
+            colorOptions.forEach(option => {
+                if (option.dataset.class === primaryClass) {
+                    option.click();
+                }
+            });
+            
+            // Resaltar la actividad seleccionada
+            document.querySelectorAll('.activity-item').forEach(item => {
+                item.style.boxShadow = 'none';
+            });
+            
+            const selectedItems = document.querySelectorAll(`.activity-item`);
+            selectedItems.forEach(item => {
+                if (item.textContent.includes(formatTime(time))) {
+                    item.style.boxShadow = '0 0 0 2px #3498db';
+                }
+            });
+        }
+
+        // Manejar añadir actividad
+        function handleAddActivity() {
+            const content = activityContent.value.trim();
+            if (!content) return;
+            
+            if (!scheduleData[selectedDay]) {
+                scheduleData[selectedDay] = {};
+            }
+            
+            scheduleData[selectedDay][selectedTime] = {
+                content: content,
+                class: selectedColorClass
+            };
+            
+            loadActivities();
+            resetForm();
+        }
+
+        // Manejar actualizar actividad
+        function handleUpdateActivity() {
+            if (!selectedActivity) return;
+            
+            const content = activityContent.value.trim();
+            if (!content) return;
+            
+            scheduleData[selectedDay][selectedTime] = {
+                content: content,
+                class: selectedColorClass
+            };
+            
+            loadActivities();
+            resetForm();
+        }
+
+        // Manejar eliminar actividad
+        function handleDeleteActivity() {
+            if (!selectedActivity) return;
+            
+            delete scheduleData[selectedDay][selectedTime];
+            loadActivities();
+            resetForm();
+        }
+
+        // Actualizar el formulario con los datos actuales
+        function updateForm() {
+            if (!scheduleData[selectedDay] || !scheduleData[selectedDay][selectedTime]) {
+                selectedActivity = null;
+                activityContent.value = '';
+                return;
+            }
+            
+            selectedActivity = scheduleData[selectedDay][selectedTime];
+            activityContent.value = selectedActivity.content;
+            
+            // Seleccionar el color correspondiente
+            const primaryClass = selectedActivity.class.split(' ')[0];
+            colorOptions.forEach(option => {
+                if (option.dataset.class === primaryClass) {
+                    option.click();
+                }
+            });
+        }
+
+        // Resetear el formulario
+        function resetForm() {
+            selectedActivity = null;
+            activityContent.value = '';
+            timeSelect.value = '9-11';
+            selectedTime = '9-11';
+            
+            // Seleccionar el primer color por defecto
+            colorOptions[0].click();
+        }
+
+        // Formatear el horario para mostrar
+        function formatTime(timeKey) {
+            const times = {
+                '7-9': '7:00 - 9:00',
+                '9-11': '9:00 - 11:00',
+                '11-13': '11:00 - 13:00',
+                '13-15': '13:00 - 15:00',
+                '15-17': '15:00 - 17:00',
+                '17-19': '17:00 - 19:00',
+                '19-21': '19:00 - 21:00',
+                '21-23': '21:00 - 23:00',
+                '23-1': '23:00 - 1:00',
+                '1-3': '1:00 - 3:00'
+            };
+            return times[timeKey] || timeKey;
+        }
+
+        // Obtener color de fondo basado en la clase
+        function getBackgroundColor(className) {
+            const classes = className.split(' ');
+            const primaryClass = classes[0];
+            
+            const colorMap = {
+                'morning': '#e3f2fd',
+                'evening': '#e8f5e9',
+                'night': '#f3e5f5',
+                'weekend': '#fff3e0',
+                'language': '#ffecb3',
+                'chores': '#ffcdd2',
+                'movie': '#d1c4e9',
+                'work': '#d7ccc8',
+                'new1': '#b2ebf2',
+                'new2': '#c8e6c9',
+                'new3': '#f0f4c3',
+                'new4': '#ffccbc'
+            };
+            
+            return colorMap[primaryClass] || '#f9f9f9';
+        }
+
+        // Obtener color del borde basado en la clase
+        function getBorderColor(className) {
+            const classes = className.split(' ');
+            const primaryClass = classes[0];
+            
+            const colorMap = {
+                'morning': '4px solid #2196f3',
+                'evening': '4px solid #4caf50',
+                'night': '4px solid #9c27b0',
+                'weekend': '4px solid #ff9800',
+                'language': '4px solid #ffc107',
+                'chores': '4px solid #f44336',
+                'movie': '4px solid #673ab7',
+                'work': '4px solid #5d4037',
+                'new1': '4px solid #00bcd4',
+                'new2': '4px solid #4caf50',
+                'new3': '4px solid #cddc39',
+                'new4': '4px solid #ff5722'
+            };
+            
+            return colorMap[primaryClass] || '4px solid #ddd';
+        }
+
+        // Renderizar el horario visual
+        function renderSchedule() {
+            scheduleDisplay.innerHTML = '';
+            
+            // Crear columna de horas
+            const timeColumn = document.createElement('div');
+            timeColumn.className = 'time-column';
+            
+            // Espacio vacío para el encabezado
+            timeColumn.appendChild(document.createElement('div'));
+            
+            // Añadir slots de tiempo
+            const timeSlots = [
+                '7:00 - 9:00', '9:00 - 11:00', '11:00 - 13:00',
+                '13:00 - 15:00', '15:00 - 17:00', '17:00 - 19:00',
+                '19:00 - 21:00', '21:00 - 23:00', '23:00 - 1:00',
+                '1:00 - 3:00'
+            ];
+            
+            timeSlots.forEach(slot => {
+                const timeSlot = document.createElement('div');
+                timeSlot.className = 'time-slot';
+                timeSlot.textContent = slot;
+                timeColumn.appendChild(timeSlot);
+            });
+            
+            scheduleDisplay.appendChild(timeColumn);
+            
+            // Crear columnas para cada día
+            const days = [
+                { id: 'monday', name: 'Lunes' },
+                { id: 'tuesday', name: 'Martes' },
+                { id: 'wednesday', name: 'Miércoles' },
+                { id: 'thursday', name: 'Jueves' },
+                { id: 'friday', name: 'Viernes' },
+                { id: 'saturday', name: 'Sábado' },
+                { id: 'sunday', name: 'Domingo' }
+            ];
+            
+            days.forEach(day => {
+                const dayColumn = document.createElement('div');
+                dayColumn.className = 'day-column';
+                
+                // Encabezado del día
+                const dayHeader = document.createElement('div');
+                dayHeader.className = 'day-header';
+                dayHeader.textContent = day.name;
+                dayColumn.appendChild(dayHeader);
+                
+                // Mapeo de horarios a índices
+                const timeIndexMap = {
+                    '7-9': 0, '9-11': 1, '11-13': 2,
+                    '13-15': 3, '15-17': 4, '17-19': 5,
+                    '19-21': 6, '21-23': 7, '23-1': 8,
+                    '1-3': 9
+                };
+                
+                // Inicializar slots vacíos
+                const dayActivities = new Array(10).fill(null);
+                
+                // Llenar con actividades existentes
+                if (scheduleData[day.id]) {
+                    Object.keys(scheduleData[day.id]).forEach(time => {
+                        const index = timeIndexMap[time];
+                        if (index !== undefined) {
+                            dayActivities[index] = scheduleData[day.id][time];
+                        }
+                    });
+                }
+                
+                // Crear elementos para cada slot
+                dayActivities.forEach((activity, index) => {
+                    const slot = document.createElement('div');
+                    
+                    if (activity) {
+                        slot.className = `activity ${activity.class}`;
+                        slot.textContent = activity.content;
+                    } else {
+                        slot.className = 'empty-slot';
+                    }
+                    
+                    dayColumn.appendChild(slot);
+                });
+                
+                scheduleDisplay.appendChild(dayColumn);
+            });
+        }
+
+        // Iniciar la aplicación cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
