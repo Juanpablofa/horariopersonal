@@ -145,7 +145,7 @@
             border-color: #2c3e50;
         }
         
-        /* Estilos del horario visual */
+        /* Estilos del horario visual - Versión escritorio */
         .schedule-container {
             display: none; /* Inicialmente oculto */
             background-color: white;
@@ -273,17 +273,120 @@
             background-color: #f9f9f9;
             border-left: 4px solid #ddd;
         }
+
+        /* Estilos del horario visual - Versión móvil */
+        .mobile-schedule {
+            display: none;
+            margin-top: 20px;
+        }
+        .mobile-day {
+            margin-bottom: 25px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .mobile-day-header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 12px 15px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .mobile-time-slot {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+        }
+        .mobile-time {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .mobile-activity {
+            font-size: 15px;
+        }
+        .no-activities {
+            padding: 15px;
+            text-align: center;
+            color: #777;
+            font-style: italic;
+        }
+
         @media (max-width: 768px) {
+            /* Ajustes generales para móvil */
+            body {
+                padding: 10px;
+            }
+            
             .control-container {
                 grid-template-columns: 1fr;
+                gap: 15px;
             }
+            
+            .control-panel {
+                padding: 15px;
+            }
+            
+            /* Ocultar horario de escritorio y mostrar versión móvil */
             .schedule {
-                grid-template-columns: 80px repeat(7, 1fr);
+                display: none;
+            }
+            
+            .mobile-schedule {
+                display: block;
+            }
+            
+            /* Ajustar leyenda para móvil */
+            .legend {
+                padding: 10px;
+                gap: 10px;
+                margin: 20px 0;
+            }
+            
+            .legend-item {
                 font-size: 12px;
             }
-            .activity, .time-slot {
-                font-size: 12px;
-                padding: 8px 5px;
+            
+            /* Ajustar botones para móvil */
+            .buttons-group {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            button {
+                width: 100%;
+                padding: 12px;
+            }
+            
+            /* Ajustar selectores de color */
+            .color-options {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 22px;
+            }
+            
+            h2 {
+                font-size: 20px;
+            }
+            
+            .mobile-day-header {
+                font-size: 15px;
+                padding: 10px 12px;
+            }
+            
+            .mobile-time-slot {
+                padding: 10px 12px;
+            }
+            
+            .legend {
+                justify-content: flex-start;
             }
         }
     </style>
@@ -420,8 +523,14 @@
                 </div>
             </div>
             
+            <!-- Horario para escritorio -->
             <div class="schedule" id="schedule-display">
                 <!-- El horario se generará dinámicamente aquí -->
+            </div>
+            
+            <!-- Horario para móviles -->
+            <div class="mobile-schedule" id="mobile-schedule-display">
+                <!-- El horario móvil se generará dinámicamente aquí -->
             </div>
         </div>
     </div>
@@ -509,6 +618,7 @@
         const controlView = document.getElementById('control-view');
         const scheduleView = document.getElementById('schedule-view');
         const scheduleDisplay = document.getElementById('schedule-display');
+        const mobileScheduleDisplay = document.getElementById('mobile-schedule-display');
 
         // Inicializar la aplicación
         function init() {
@@ -776,6 +886,15 @@
 
         // Renderizar el horario visual
         function renderSchedule() {
+            // Renderizar horario de escritorio
+            renderDesktopSchedule();
+            
+            // Renderizar horario móvil
+            renderMobileSchedule();
+        }
+
+        // Renderizar horario de escritorio
+        function renderDesktopSchedule() {
             scheduleDisplay.innerHTML = '';
             
             // Crear columna de horas
@@ -859,6 +978,72 @@
                 });
                 
                 scheduleDisplay.appendChild(dayColumn);
+            });
+        }
+
+        // Renderizar horario móvil
+        function renderMobileSchedule() {
+            mobileScheduleDisplay.innerHTML = '';
+            
+            const days = [
+                { id: 'monday', name: 'Lunes' },
+                { id: 'tuesday', name: 'Martes' },
+                { id: 'wednesday', name: 'Miércoles' },
+                { id: 'thursday', name: 'Jueves' },
+                { id: 'friday', name: 'Viernes' },
+                { id: 'saturday', name: 'Sábado' },
+                { id: 'sunday', name: 'Domingo' }
+            ];
+            
+            days.forEach(day => {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'mobile-day';
+                
+                // Encabezado del día
+                const dayHeader = document.createElement('div');
+                dayHeader.className = 'mobile-day-header';
+                dayHeader.textContent = day.name;
+                dayElement.appendChild(dayHeader);
+                
+                // Verificar si hay actividades para este día
+                if (!scheduleData[day.id] || Object.keys(scheduleData[day.id]).length === 0) {
+                    const noActivities = document.createElement('div');
+                    noActivities.className = 'no-activities';
+                    noActivities.textContent = 'No hay actividades programadas';
+                    dayElement.appendChild(noActivities);
+                } else {
+                    // Ordenar las actividades por hora
+                    const sortedTimes = Object.keys(scheduleData[day.id]).sort((a, b) => {
+                        // Convertir los rangos de tiempo a números para ordenar
+                        const startA = parseInt(a.split('-')[0]);
+                        const startB = parseInt(b.split('-')[0]);
+                        return startA - startB;
+                    });
+                    
+                    // Crear elementos para cada actividad
+                    sortedTimes.forEach(time => {
+                        const activity = scheduleData[day.id][time];
+                        
+                        const timeSlot = document.createElement('div');
+                        timeSlot.className = 'mobile-time-slot';
+                        timeSlot.style.backgroundColor = getBackgroundColor(activity.class);
+                        timeSlot.style.borderLeft = getBorderColor(activity.class);
+                        
+                        const timeElement = document.createElement('div');
+                        timeElement.className = 'mobile-time';
+                        timeElement.textContent = formatTime(time);
+                        
+                        const activityElement = document.createElement('div');
+                        activityElement.className = 'mobile-activity';
+                        activityElement.textContent = activity.content;
+                        
+                        timeSlot.appendChild(timeElement);
+                        timeSlot.appendChild(activityElement);
+                        dayElement.appendChild(timeSlot);
+                    });
+                }
+                
+                mobileScheduleDisplay.appendChild(dayElement);
             });
         }
 
