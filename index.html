@@ -657,65 +657,7 @@
 
     <script>
         // Datos iniciales del horario
-        let scheduleData = {
-            monday: {
-                '8-10': { content: 'Aprender Inglés (app)', class: 'studies' },
-                '10-12': { content: 'Juegos: PS4', class: 'fun' },
-                '12-14': { content: 'Trabajo', class: 'work' },
-                '14-16': { content: 'Trabajo', class: 'work' },
-                '16-18': { content: 'Trabajo', class: 'work' },
-                '18-20': { content: 'Limpiar segundo piso', class: 'responsibilities' },
-                '20-22': { content: 'Juegos: Nintendo Wii', class: 'fun' }
-            },
-            tuesday: {
-                '8-10': { content: 'Aprender Chino (app)', class: 'studies' },
-                '10-12': { content: 'Juegos: Nintendo Wii', class: 'fun' },
-                '12-14': { content: 'Trabajo', class: 'work' },
-                '14-16': { content: 'Trabajo', class: 'work' },
-                '16-18': { content: 'Trabajo', class: 'work' },
-                '18-20': { content: 'Arreglar accesorios', class: 'responsibilities' },
-                '20-22': { content: 'Juegos: PS3', class: 'fun' }
-            },
-            wednesday: {
-                '8-10': { content: 'Aprender Inglés (app)', class: 'studies' },
-                '10-12': { content: 'Juegos: Xbox 360', class: 'fun' },
-                '12-14': { content: 'Trabajo', class: 'work' },
-                '14-16': { content: 'Trabajo', class: 'work' },
-                '16-18': { content: 'Trabajo', class: 'work' },
-                '18-20': { content: 'Ver 1 película', class: 'fun' }
-            },
-            thursday: {
-                '8-10': { content: 'Aprender Chino (app)', class: 'studies' },
-                '10-12': { content: 'Juegos: Consola Retro', class: 'fun' },
-                '12-14': { content: 'Trabajo', class: 'work' },
-                '14-16': { content: 'Trabajo', class: 'work' },
-                '16-18': { content: 'Trabajo', class: 'work' },
-                '18-20': { content: 'Limpiar cosas personales', class: 'responsibilities' },
-                '20-22': { content: 'Juegos: PS4', class: 'fun' }
-            },
-            friday: {
-                '8-10': { content: 'Aprender Inglés (app)', class: 'studies' },
-                '10-12': { content: 'Juegos: PS3', class: 'fun' },
-                '12-14': { content: 'Trabajo', class: 'work' },
-                '14-16': { content: 'Trabajo', class: 'work' },
-                '16-18': { content: 'Trabajo', class: 'work' },
-                '18-20': { content: 'Juegos: Xbox 360', class: 'fun' }
-            },
-            saturday: {
-                '8-10': { content: 'Trabajo (9:00-11:00)', class: 'work' },
-                '10-12': { content: 'Trabajo (11:00-13:00)', class: 'work' },
-                '12-14': { content: 'Trabajo (13:00-15:00)', class: 'work' },
-                '14-16': { content: 'Trabajo (15:00-17:00)', class: 'work' },
-                '18-20': { content: 'Juegos: Consola menos usada', class: 'fun' },
-                '20-22': { content: 'Repaso de idiomas', class: 'studies' },
-                '22-24': { content: 'Tiempo libre', class: 'fun' }
-            },
-            sunday: {
-                '8-10': { content: '1 hora de repaso de idiomas', class: 'studies' },
-                '10-12': { content: 'Limpieza/organización', class: 'responsibilities' },
-                '18-20': { content: 'Maratón de juegos o película', class: 'fun' }
-            }
-        };
+        
 
         // Constante con los slots de tiempo
         const TIME_SLOTS = {
@@ -777,40 +719,123 @@
         const saveGroupBtn = document.getElementById('save-group-btn');
 
         // Inicializar la aplicación
-        function init() {
-            // Cargar eventos
-            daySelect.addEventListener('change', handleDayChange);
-            
-            // Renderizar los checkboxes de horario
-            renderTimeCheckboxes();
-
-            // Eventos para los botones de categoría
-            categoryOptions.forEach(option => {
-                option.addEventListener('click', handleCategorySelect);
-            });
-            
-            // Eventos para los botones de acción
-            addBtn.addEventListener('click', handleAddActivity);
-            updateBtn.addEventListener('click', handleUpdateActivity);
-            deleteBtn.addEventListener('click', handleDeleteActivity);
-            
-            // Evento para alternar vista
-            toggleViewBtn.addEventListener('click', toggleView);
-            
-            // Eventos para backup/restauración
-            backupBtn.addEventListener('click', handleBackup);
-            restoreBtn.addEventListener('click', handleRestore);
-            clearBtn.addEventListener('click', handleClearData);
-            
-            // Eventos para nuevo grupo
-            addGroupBtn.addEventListener('click', toggleNewGroupForm);
-            saveGroupBtn.addEventListener('click', handleSaveNewGroup);
-            
-            // Cargar datos iniciales
-            loadActivities();
-            updateForm();
-            renderSchedule();
+        // Inicializar la aplicación cuando el DOM esté listo
+function init() {
+    // Cargar datos desde localStorage o usar datos por defecto
+    const savedData = localStorage.getItem('personalSchedule');
+    if (savedData) {
+        try {
+            scheduleData = JSON.parse(savedData);
+        } catch (e) {
+            console.error("Error al cargar datos desde localStorage:", e);
+            // Si hay error, cargar datos por defecto
+            scheduleData = getDefaultSchedule();
         }
+    } else {
+        // Si no hay datos guardados, cargar horario por defecto
+        scheduleData = getDefaultSchedule();
+    }
+
+    // Cargar eventos
+    daySelect.addEventListener('change', handleDayChange);
+    
+    // Renderizar los checkboxes de horario
+    renderTimeCheckboxes();
+
+    // Eventos para los botones de categoría
+    categoryOptions.forEach(option => {
+        option.addEventListener('click', handleCategorySelect);
+    });
+    
+    // Eventos para los botones de acción
+    addBtn.addEventListener('click', handleAddActivity);
+    updateBtn.addEventListener('click', handleUpdateActivity);
+    deleteBtn.addEventListener('click', handleDeleteActivity);
+    
+    // Evento para alternar vista
+    toggleViewBtn.addEventListener('click', toggleView);
+    
+    // Eventos para backup/restauración
+    backupBtn.addEventListener('click', handleBackup);
+    restoreBtn.addEventListener('click', handleRestore);
+    clearBtn.addEventListener('click', handleClearData);
+    
+    // Eventos para nuevo grupo
+    addGroupBtn.addEventListener('click', toggleNewGroupForm);
+    saveGroupBtn.addEventListener('click', handleSaveNewGroup);
+    
+    // Cargar datos iniciales
+    loadActivities();
+    updateForm();
+    renderSchedule();
+}
+
+// Función para obtener el horario por defecto
+function getDefaultSchedule() {
+    return {
+        monday: {
+            '8-10': { content: 'Aprender Inglés (app)', class: 'studies' },
+            '10-12': { content: 'Juegos: PS4', class: 'fun' },
+            '12-14': { content: 'Trabajo', class: 'work' },
+            '14-16': { content: 'Trabajo', class: 'work' },
+            '16-18': { content: 'Trabajo', class: 'work' },
+            '18-20': { content: 'Limpiar segundo piso', class: 'responsibilities' },
+            '20-22': { content: 'Juegos: Nintendo Wii', class: 'fun' }
+        },
+        tuesday: {
+            '8-10': { content: 'Aprender Chino (app)', class: 'studies' },
+            '10-12': { content: 'Juegos: Nintendo Wii', class: 'fun' },
+            '12-14': { content: 'Trabajo', class: 'work' },
+            '14-16': { content: 'Trabajo', class: 'work' },
+            '16-18': { content: 'Trabajo', class: 'work' },
+            '18-20': { content: 'Arreglar accesorios', class: 'responsibilities' },
+            '20-22': { content: 'Juegos: PS3', class: 'fun' }
+        },
+        wednesday: {
+            '8-10': { content: 'Aprender Inglés (app)', class: 'studies' },
+            '10-12': { content: 'Juegos: Xbox 360', class: 'fun' },
+            '12-14': { content: 'Trabajo', class: 'work' },
+            '14-16': { content: 'Trabajo', class: 'work' },
+            '16-18': { content: 'Trabajo', class: 'work' },
+            '18-20': { content: 'Ver 1 película', class: 'fun' }
+        },
+        thursday: {
+            '8-10': { content: 'Aprender Chino (app)', class: 'studies' },
+            '10-12': { content: 'Juegos: Consola Retro', class: 'fun' },
+            '12-14': { content: 'Trabajo', class: 'work' },
+            '14-16': { content: 'Trabajo', class: 'work' },
+            '16-18': { content: 'Trabajo', class: 'work' },
+            '18-20': { content: 'Limpiar cosas personales', class: 'responsibilities' },
+            '20-22': { content: 'Juegos: PS4', class: 'fun' }
+        },
+        friday: {
+            '8-10': { content: 'Aprender Inglés (app)', class: 'studies' },
+            '10-12': { content: 'Juegos: PS3', class: 'fun' },
+            '12-14': { content: 'Trabajo', class: 'work' },
+            '14-16': { content: 'Trabajo', class: 'work' },
+            '16-18': { content: 'Trabajo', class: 'work' },
+            '18-20': { content: 'Juegos: Xbox 360', class: 'fun' }
+        },
+        saturday: {
+            '8-10': { content: 'Trabajo (9:00-11:00)', class: 'work' },
+            '10-12': { content: 'Trabajo (11:00-13:00)', class: 'work' },
+            '12-14': { content: 'Trabajo (13:00-15:00)', class: 'work' },
+            '14-16': { content: 'Trabajo (15:00-17:00)', class: 'work' },
+            '18-20': { content: 'Juegos: Consola menos usada', class: 'fun' },
+            '20-22': { content: 'Repaso de idiomas', class: 'studies' },
+            '22-24': { content: 'Tiempo libre', class: 'fun' }
+        },
+        sunday: {
+            '8-10': { content: '1 hora de repaso de idiomas', class: 'studies' },
+            '10-12': { content: 'Limpieza/organización', class: 'responsibilities' },
+            '18-20': { content: 'Maratón de juegos o película', class: 'fun' }
+        }
+    };
+}
+
+function saveToLocalStorage() {
+    localStorage.setItem('personalSchedule', JSON.stringify(scheduleData));
+}
 
         // CAMBIO: Renderizar los checkboxes de horario
         function renderTimeCheckboxes() {
@@ -891,9 +916,10 @@
             categoryContainer.appendChild(newCategory);
             
             // Incrementar contador y resetear formulario
-            newGroupCounter++;
-            toggleNewGroupForm();
-            showMessage(`Nuevo grupo "${groupName}" creado`, 'success');
+           newGroupCounter++;
+toggleNewGroupForm();
+showMessage(`Nuevo grupo "${groupName}" creado`, 'success');
+saveToLocalStorage(); // Añadir esta línea
             
             // Actualizar el horario para mostrar la nueva categoría si es usada
             renderSchedule();
@@ -1004,11 +1030,12 @@
             }
             
             timesToAdd.forEach(time => {
-                scheduleData[selectedDay][time] = {
-                    content: content,
-                    class: selectedCategoryClass
-                };
-            });
+    scheduleData[selectedDay][time] = {
+        content: content,
+        class: selectedCategoryClass
+    };
+});
+saveToLocalStorage(); // Añadir esta línea
             
             loadActivities();
             resetForm();
@@ -1026,10 +1053,11 @@
             const content = activityContent.value.trim();
             if (!content) return;
             
-            scheduleData[selectedDay][selectedTime] = {
-                content: content,
-                class: selectedCategoryClass
-            };
+           scheduleData[selectedDay][selectedTime] = {
+    content: content,
+    class: selectedCategoryClass
+};
+saveToLocalStorage(); // Añadir esta línea
             
             loadActivities();
             resetForm();
@@ -1048,10 +1076,11 @@
             
             if (confirm(`¿Estás seguro de que deseas eliminar las actividades de los ${timesToDelete.length} horario(s) seleccionado(s)?`)) {
                 timesToDelete.forEach(time => {
-                    if (scheduleData[selectedDay] && scheduleData[selectedDay][time]) {
-                        delete scheduleData[selectedDay][time];
-                    }
-                });
+    if (scheduleData[selectedDay] && scheduleData[selectedDay][time]) {
+        delete scheduleData[selectedDay][time];
+    }
+});
+saveToLocalStorage(); // Añadir esta línea
                 
                 loadActivities();
                 resetForm();
@@ -1476,11 +1505,12 @@
                         
                         // Confirmar antes de sobrescribir
                         if (confirm(`¿Restaurar backup "${backupData.name}" creado el ${new Date(backupData.date).toLocaleDateString()}? Esto sobrescribirá tu horario actual.`)) {
-                            scheduleData = backupData.schedule;
-                            loadActivities();
-                            renderSchedule();
-                            showMessage(`Horario restaurado desde "${backupData.name}"`, 'success');
-                        }
+    scheduleData = backupData.schedule;
+    saveToLocalStorage(); // Añadir esta línea
+    loadActivities();
+    renderSchedule();
+    showMessage(`Horario restaurado desde "${backupData.name}"`, 'success');
+}
                     } catch (error) {
                         showMessage(`Error al restaurar: ${error.message}`, 'error');
                     }
@@ -1498,14 +1528,15 @@
         function handleClearData() {
             if (confirm('¿Estás seguro de que deseas borrar TODOS los datos del horario? Esta acción no se puede deshacer.')) {
                 scheduleData = {
-                    monday: {},
-                    tuesday: {},
-                    wednesday: {},
-                    thursday: {},
-                    friday: {},
-                    saturday: {},
-                    sunday: {}
-                };
+    monday: {},
+    tuesday: {},
+    wednesday: {},
+    thursday: {},
+    friday: {},
+    saturday: {},
+    sunday: {}
+};
+saveToLocalStorage(); // Añadir esta línea
                 
                 loadActivities();
                 renderSchedule();
