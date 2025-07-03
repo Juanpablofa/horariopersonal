@@ -588,7 +588,10 @@
                         </div>
                         
                         <button id="add-group-btn" class="new-group-btn">+ Nueva Categoria</button>
-                        
+                        <button id="delete-group-btn" class="delete-btn" style="margin-top: 10px;">Borrar Categoría</button>
+
+
+
                         <div class="new-group-form" id="new-group-form">
                             <div class="new-group-input">
                                 <input type="text" id="new-group-name" placeholder="Nombre del nuevo grupo">
@@ -713,6 +716,7 @@
         const scheduleDisplay = document.getElementById('schedule-display');
         const mobileScheduleDisplay = document.getElementById('mobile-schedule-display');
         const legend = document.getElementById('schedule-legend');
+	const deleteGroupBtn = document.getElementById('delete-group-btn');
         
         // Nuevos elementos para backup/restauración
         const backupBtn = document.getElementById('backup-btn');
@@ -729,6 +733,7 @@
 
         // Inicializar la aplicación
         // Inicializar la aplicación cuando el DOM esté listo
+
 function init() {
     // Cargar datos desde localStorage o usar datos por defecto
     const savedData = localStorage.getItem('personalSchedule');
@@ -791,6 +796,9 @@ function init() {
     categoryOptions.forEach(option => {
         option.addEventListener('click', handleCategorySelect);
     });
+
+// Evento para borrar categoría
+deleteGroupBtn.addEventListener('click', handleDeleteCategory);
     
     // Eventos para los botones de acción
     addBtn.addEventListener('click', handleAddActivity);
@@ -818,105 +826,13 @@ function init() {
 // Función para obtener el horario por defecto
 function getDefaultSchedule() {
     return {
-        monday: {
-            '8-9': { content: 'Aprender Inglés (app)', class: 'studies' },
-            '9-10': { content: 'Aprender Inglés (app)', class: 'studies' },
-            '10-11': { content: 'Juegos: PS4', class: 'fun' },
-            '11-12': { content: 'Juegos: PS4', class: 'fun' },
-            '12-13': { content: 'Trabajo', class: 'work' },
-            '13-14': { content: 'Trabajo', class: 'work' },
-            '14-15': { content: 'Trabajo', class: 'work' },
-            '15-16': { content: 'Trabajo', class: 'work' },
-            '16-17': { content: 'Trabajo', class: 'work' },
-            '17-18': { content: 'Trabajo', class: 'work' },
-            '18-19': { content: 'Limpiar segundo piso', class: 'responsibilities' },
-            '19-20': { content: 'Limpiar segundo piso', class: 'responsibilities' },
-            '20-21': { content: 'Juegos: Nintendo Wii', class: 'fun' },
-            '21-22': { content: 'Juegos: Nintendo Wii', class: 'fun' }
-        },
-        tuesday: {
-            '8-9': { content: 'Aprender Chino (app)', class: 'studies' },
-            '9-10': { content: 'Aprender Chino (app)', class: 'studies' },
-            '10-11': { content: 'Juegos: Nintendo Wii', class: 'fun' },
-            '11-12': { content: 'Juegos: Nintendo Wii', class: 'fun' },
-            '12-13': { content: 'Trabajo', class: 'work' },
-            '13-14': { content: 'Trabajo', class: 'work' },
-            '14-15': { content: 'Trabajo', class: 'work' },
-            '15-16': { content: 'Trabajo', class: 'work' },
-            '16-17': { content: 'Trabajo', class: 'work' },
-            '17-18': { content: 'Trabajo', class: 'work' },
-            '18-19': { content: 'Arreglar accesorios', class: 'responsibilities' },
-            '19-20': { content: 'Arreglar accesorios', class: 'responsibilities' },
-            '20-21': { content: 'Juegos: PS3', class: 'fun' },
-            '21-22': { content: 'Juegos: PS3', class: 'fun' }
-        },
-        wednesday: {
-            '8-9': { content: 'Aprender Inglés (app)', class: 'studies' },
-            '9-10': { content: 'Aprender Inglés (app)', class: 'studies' },
-            '10-11': { content: 'Juegos: Xbox 360', class: 'fun' },
-            '11-12': { content: 'Juegos: Xbox 360', class: 'fun' },
-            '12-13': { content: 'Trabajo', class: 'work' },
-            '13-14': { content: 'Trabajo', class: 'work' },
-            '14-15': { content: 'Trabajo', class: 'work' },
-            '15-16': { content: 'Trabajo', class: 'work' },
-            '16-17': { content: 'Trabajo', class: 'work' },
-            '17-18': { content: 'Trabajo', class: 'work' },
-            '18-19': { content: 'Ver película', class: 'fun' },
-            '19-20': { content: 'Ver película', class: 'fun' }
-        },
-        thursday: {
-            '8-9': { content: 'Aprender Chino (app)', class: 'studies' },
-            '9-10': { content: 'Aprender Chino (app)', class: 'studies' },
-            '10-11': { content: 'Juegos: Consola Retro', class: 'fun' },
-            '11-12': { content: 'Juegos: Consola Retro', class: 'fun' },
-            '12-13': { content: 'Trabajo', class: 'work' },
-            '13-14': { content: 'Trabajo', class: 'work' },
-            '14-15': { content: 'Trabajo', class: 'work' },
-            '15-16': { content: 'Trabajo', class: 'work' },
-            '16-17': { content: 'Trabajo', class: 'work' },
-            '17-18': { content: 'Trabajo', class: 'work' },
-            '18-19': { content: 'Limpiar cosas personales', class: 'responsibilities' },
-            '19-20': { content: 'Limpiar cosas personales', class: 'responsibilities' },
-            '20-21': { content: 'Juegos: PS4', class: 'fun' },
-            '21-22': { content: 'Juegos: PS4', class: 'fun' }
-        },
-        friday: {
-            '8-9': { content: 'Aprender Inglés (app)', class: 'studies' },
-            '9-10': { content: 'Aprender Inglés (app)', class: 'studies' },
-            '10-11': { content: 'Juegos: PS3', class: 'fun' },
-            '11-12': { content: 'Juegos: PS3', class: 'fun' },
-            '12-13': { content: 'Trabajo', class: 'work' },
-            '13-14': { content: 'Trabajo', class: 'work' },
-            '14-15': { content: 'Trabajo', class: 'work' },
-            '15-16': { content: 'Trabajo', class: 'work' },
-            '16-17': { content: 'Trabajo', class: 'work' },
-            '17-18': { content: 'Trabajo', class: 'work' },
-            '18-19': { content: 'Juegos: Xbox 360', class: 'fun' },
-            '19-20': { content: 'Juegos: Xbox 360', class: 'fun' }
-        },
-        saturday: {
-            '9-10': { content: 'Trabajo', class: 'work' },
-            '10-11': { content: 'Trabajo', class: 'work' },
-            '11-12': { content: 'Trabajo', class: 'work' },
-            '12-13': { content: 'Trabajo', class: 'work' },
-            '13-14': { content: 'Trabajo', class: 'work' },
-            '14-15': { content: 'Trabajo', class: 'work' },
-            '15-16': { content: 'Trabajo', class: 'work' },
-            '16-17': { content: 'Trabajo', class: 'work' },
-            '18-19': { content: 'Juegos: Consola menos usada', class: 'fun' },
-            '19-20': { content: 'Juegos: Consola menos usada', class: 'fun' },
-            '20-21': { content: 'Repaso de idiomas', class: 'studies' },
-            '21-22': { content: 'Repaso de idiomas', class: 'studies' },
-            '22-23': { content: 'Tiempo libre', class: 'fun' },
-            '23-0': { content: 'Tiempo libre', class: 'fun' }
-        },
-        sunday: {
-            '8-9': { content: 'Repaso de idiomas', class: 'studies' },
-            '10-11': { content: 'Limpieza/organización', class: 'responsibilities' },
-            '11-12': { content: 'Limpieza/organización', class: 'responsibilities' },
-            '18-19': { content: 'Maratón de juegos o película', class: 'fun' },
-            '19-20': { content: 'Maratón de juegos o película', class: 'fun' }
-        }
+        monday: {},
+        tuesday: {},
+        wednesday: {},
+        thursday: {},
+        friday: {},
+        saturday: {},
+        sunday: {}
     };
 }
 
@@ -1017,6 +933,58 @@ function saveToLocalStorage() {
 // Añadir esta función si no existe
 function saveGroupColorsToLocalStorage() {
     localStorage.setItem('groupColors', JSON.stringify(groupColors));
+}
+
+// Función para manejar el borrado de categoría
+function handleDeleteCategory() {
+    // Verificar que hay una categoría seleccionada
+    const selectedOption = document.querySelector('.category-option.selected');
+    if (!selectedOption) {
+        showMessage('Por favor, selecciona una categoría para borrar', 'error');
+        return;
+    }
+    
+    const categoryClass = selectedOption.dataset.class;
+    
+    // No permitir borrar categorías predefinidas
+    const predefinedCategories = ['responsibilities', 'fun', 'studies', 'work'];
+    if (predefinedCategories.includes(categoryClass)) {
+        showMessage('No se pueden borrar las categorías predefinidas', 'error');
+        return;
+    }
+    
+    if (confirm(`¿Estás seguro de que deseas borrar la categoría "${selectedOption.textContent}"? Esto también eliminará todas las actividades asociadas.`)) {
+        // 1. Eliminar la categoría de la interfaz
+        selectedOption.remove();
+        
+        // 2. Eliminar todas las actividades de esta categoría
+        Object.keys(scheduleData).forEach(day => {
+            Object.keys(scheduleData[day]).forEach(time => {
+                if (scheduleData[day][time].class === categoryClass) {
+                    delete scheduleData[day][time];
+                }
+            });
+        });
+        
+        // 3. Actualizar los datos de grupoColors
+        const groupIndex = availableGroupClasses.indexOf(categoryClass);
+        if (groupIndex !== -1) {
+            groupColors[groupIndex].name = '';
+            saveGroupColorsToLocalStorage();
+        }
+        
+        // 4. Seleccionar la primera categoría disponible
+        const firstCategory = document.querySelector('.category-option');
+        if (firstCategory) {
+            firstCategory.click();
+        }
+        
+        // 5. Guardar y actualizar
+        saveToLocalStorage();
+        loadActivities();
+        renderSchedule();
+        showMessage('Categoría borrada exitosamente', 'success');
+    }
 }
 
         // Manejar cambio de día
