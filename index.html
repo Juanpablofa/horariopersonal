@@ -539,6 +539,12 @@
                 justify-content: flex-start;
             }
         }
+
+/* Añade esto en tu CSS */
+#now-btn:hover {
+    background-color: #138a72 !important;
+}
+
     </style>
 </head>
 <body>
@@ -639,6 +645,11 @@
         
         <div id="schedule-view" class="schedule-container">
             <h2>Mi Cronograma Semanal</h2>
+
+	<!-- Añade este botón -->
+    <div style="text-align: center; margin: 15px 0;">
+        <button id="now-btn" class="toggle-btn" style="background-color: #16a085;">Ahora</button>
+    </div>
             
             <div class="legend" id="schedule-legend">
                 </div>
@@ -692,6 +703,7 @@
         let selectedCategoryClass = 'responsibilities';
         let currentView = 'control'; // 'control' o 'schedule'
         let newGroupCounter = 1;
+	let nowBtn = document.getElementById('now-btn');
         const availableGroupClasses = ['new-group-1', 'new-group-2', 'new-group-3', 'new-group-4'];
         const groupColors = [
             { bg: '#b2ebf2', border: '#00bcd4', name: '' },
@@ -799,6 +811,9 @@ function init() {
 
 // Evento para borrar categoría
 deleteGroupBtn.addEventListener('click', handleDeleteCategory);
+
+// Añade este evento con los otros
+nowBtn.addEventListener('click', highlightCurrentActivity);
     
     // Eventos para los botones de acción
     addBtn.addEventListener('click', handleAddActivity);
@@ -1707,6 +1722,73 @@ function calculateHours(timeKey) {
     return 1;
 }
 
+function highlightCurrentActivity() {
+    // Primero, quitar cualquier resaltado previo
+    document.querySelectorAll('.activity, .mobile-time-slot').forEach(el => {
+        el.style.boxShadow = 'none';
+    });
+
+    const now = new Date();
+    const currentDay = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'][now.getDay()];
+    const currentHour = now.getHours();
+
+    // Función para encontrar el slot de tiempo actual
+    function getCurrentTimeSlot() {
+        for (const [timeRange] of Object.entries(TIME_SLOTS)) {
+            const [start, end] = timeRange.split('-').map(Number);
+            // Manejar el caso de medianoche (0:00)
+            const adjustedEnd = end === 0 ? 24 : end;
+            
+            if (currentHour >= start && currentHour < adjustedEnd) {
+                return timeRange;
+            }
+        }
+        return null;
+    }
+
+    const currentTimeSlot = getCurrentTimeSlot();
+    
+    if (!currentTimeSlot) {
+        showMessage('No hay actividades programadas en este momento', 'info');
+        return;
+    }
+
+    // Resaltar en versión escritorio
+    if (scheduleData[currentDay] && scheduleData[currentDay][currentTimeSlot]) {
+        // Encontrar la columna del día actual
+        const dayColumns = document.querySelectorAll('.day-column');
+        const currentDayIndex = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].indexOf(currentDay);
+        
+        if (currentDayIndex !== -1 && dayColumns[currentDayIndex]) {
+            // Encontrar el slot de tiempo (el índice en TIME_SLOTS + 1 por el header)
+            const timeSlots = Object.keys(TIME_SLOTS);
+            const timeIndex = timeSlots.indexOf(currentTimeSlot);
+            
+            if (timeIndex !== -1) {
+                const activitySlot = dayColumns[currentDayIndex].children[timeIndex + 1]; // +1 por el header
+                if (activitySlot) {
+                    activitySlot.style.boxShadow = '0 0 0 3px #16a085';
+                    activitySlot.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        }
+    }
+
+    // Resaltar en versión móvil
+    const mobileDay = document.querySelector(`.mobile-day:nth-child(${now.getDay() === 0 ? 7 : now.getDay()})`);
+    if (mobileDay) {
+        const mobileSlots = mobileDay.querySelectorAll('.mobile-time-slot');
+        for (const slot of mobileSlots) {
+            if (slot.querySelector('.mobile-time')?.textContent.includes(TIME_SLOTS[currentTimeSlot])) {
+                slot.style.boxShadow = '0 0 0 3px #16a085';
+                slot.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                break;
+            }
+        }
+    }
+
+    showMessage(`Mostrando actividad actual: ${TIME_SLOTS[currentTimeSlot]}`, 'success');
+}
     
 
 
