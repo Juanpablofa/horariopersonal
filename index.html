@@ -192,10 +192,10 @@
             margin-top: 20px;
         }
         .time-column {
-            display: grid;
-            grid-template-rows: 60px repeat(10, 1fr);
-            gap: 10px;
-        }
+    display: grid;
+    grid-template-rows: 60px repeat(19, 1fr);
+    gap: 10px;
+}
         .time-slot {
             font-size: 14px;
             text-align: right;
@@ -206,10 +206,10 @@
             color: #555;
         }
         .day-column {
-            display: grid;
-            grid-template-rows: 60px repeat(10, 1fr);
-            gap: 10px;
-        }
+    display: grid;
+    grid-template-rows: 60px repeat(19, 1fr);
+    gap: 10px;
+}
         .day-header {
             font-weight: bold;
             text-align: center;
@@ -660,18 +660,27 @@
         
 
         // Constante con los slots de tiempo
-        const TIME_SLOTS = {
-            '6-8':   '6:00 - 8:00',
-            '8-10':  '8:00 - 10:00',
-            '10-12': '10:00 - 12:00',
-            '12-14': '12:00 - 14:00',
-            '14-16': '14:00 - 16:00',
-            '16-18': '16:00 - 18:00',
-            '18-20': '18:00 - 20:00',
-            '20-22': '20:00 - 22:00',
-            '22-24': '22:00 - 0:00',
-            '0-2': '0:00 - 2:00'
-        };
+       const TIME_SLOTS = {
+    '7-8': '7:00 - 8:00',
+    '8-9': '8:00 - 9:00',
+    '9-10': '9:00 - 10:00',
+    '10-11': '10:00 - 11:00',
+    '11-12': '11:00 - 12:00',
+    '12-13': '12:00 - 13:00',
+    '13-14': '13:00 - 14:00',
+    '14-15': '14:00 - 15:00',
+    '15-16': '15:00 - 16:00',
+    '16-17': '16:00 - 17:00',
+    '17-18': '17:00 - 18:00',
+    '18-19': '18:00 - 19:00',
+    '19-20': '19:00 - 20:00',
+    '20-21': '20:00 - 21:00',
+    '21-22': '21:00 - 22:00',
+    '22-23': '22:00 - 23:00',
+    '23-0': '23:00 - 0:00',
+    '0-1': '0:00 - 1:00',
+    '1-2': '1:00 - 2:00'
+};
 
         // Variables para el control
         let selectedDay = 'monday';
@@ -810,61 +819,103 @@ function init() {
 function getDefaultSchedule() {
     return {
         monday: {
-            '8-10': { content: 'Aprender Inglés (app)', class: 'studies' },
-            '10-12': { content: 'Juegos: PS4', class: 'fun' },
-            '12-14': { content: 'Trabajo', class: 'work' },
-            '14-16': { content: 'Trabajo', class: 'work' },
-            '16-18': { content: 'Trabajo', class: 'work' },
-            '18-20': { content: 'Limpiar segundo piso', class: 'responsibilities' },
-            '20-22': { content: 'Juegos: Nintendo Wii', class: 'fun' }
+            '8-9': { content: 'Aprender Inglés (app)', class: 'studies' },
+            '9-10': { content: 'Aprender Inglés (app)', class: 'studies' },
+            '10-11': { content: 'Juegos: PS4', class: 'fun' },
+            '11-12': { content: 'Juegos: PS4', class: 'fun' },
+            '12-13': { content: 'Trabajo', class: 'work' },
+            '13-14': { content: 'Trabajo', class: 'work' },
+            '14-15': { content: 'Trabajo', class: 'work' },
+            '15-16': { content: 'Trabajo', class: 'work' },
+            '16-17': { content: 'Trabajo', class: 'work' },
+            '17-18': { content: 'Trabajo', class: 'work' },
+            '18-19': { content: 'Limpiar segundo piso', class: 'responsibilities' },
+            '19-20': { content: 'Limpiar segundo piso', class: 'responsibilities' },
+            '20-21': { content: 'Juegos: Nintendo Wii', class: 'fun' },
+            '21-22': { content: 'Juegos: Nintendo Wii', class: 'fun' }
         },
         tuesday: {
-            '8-10': { content: 'Aprender Chino (app)', class: 'studies' },
-            '10-12': { content: 'Juegos: Nintendo Wii', class: 'fun' },
-            '12-14': { content: 'Trabajo', class: 'work' },
-            '14-16': { content: 'Trabajo', class: 'work' },
-            '16-18': { content: 'Trabajo', class: 'work' },
-            '18-20': { content: 'Arreglar accesorios', class: 'responsibilities' },
-            '20-22': { content: 'Juegos: PS3', class: 'fun' }
+            '8-9': { content: 'Aprender Chino (app)', class: 'studies' },
+            '9-10': { content: 'Aprender Chino (app)', class: 'studies' },
+            '10-11': { content: 'Juegos: Nintendo Wii', class: 'fun' },
+            '11-12': { content: 'Juegos: Nintendo Wii', class: 'fun' },
+            '12-13': { content: 'Trabajo', class: 'work' },
+            '13-14': { content: 'Trabajo', class: 'work' },
+            '14-15': { content: 'Trabajo', class: 'work' },
+            '15-16': { content: 'Trabajo', class: 'work' },
+            '16-17': { content: 'Trabajo', class: 'work' },
+            '17-18': { content: 'Trabajo', class: 'work' },
+            '18-19': { content: 'Arreglar accesorios', class: 'responsibilities' },
+            '19-20': { content: 'Arreglar accesorios', class: 'responsibilities' },
+            '20-21': { content: 'Juegos: PS3', class: 'fun' },
+            '21-22': { content: 'Juegos: PS3', class: 'fun' }
         },
         wednesday: {
-            '8-10': { content: 'Aprender Inglés (app)', class: 'studies' },
-            '10-12': { content: 'Juegos: Xbox 360', class: 'fun' },
-            '12-14': { content: 'Trabajo', class: 'work' },
-            '14-16': { content: 'Trabajo', class: 'work' },
-            '16-18': { content: 'Trabajo', class: 'work' },
-            '18-20': { content: 'Ver 1 película', class: 'fun' }
+            '8-9': { content: 'Aprender Inglés (app)', class: 'studies' },
+            '9-10': { content: 'Aprender Inglés (app)', class: 'studies' },
+            '10-11': { content: 'Juegos: Xbox 360', class: 'fun' },
+            '11-12': { content: 'Juegos: Xbox 360', class: 'fun' },
+            '12-13': { content: 'Trabajo', class: 'work' },
+            '13-14': { content: 'Trabajo', class: 'work' },
+            '14-15': { content: 'Trabajo', class: 'work' },
+            '15-16': { content: 'Trabajo', class: 'work' },
+            '16-17': { content: 'Trabajo', class: 'work' },
+            '17-18': { content: 'Trabajo', class: 'work' },
+            '18-19': { content: 'Ver película', class: 'fun' },
+            '19-20': { content: 'Ver película', class: 'fun' }
         },
         thursday: {
-            '8-10': { content: 'Aprender Chino (app)', class: 'studies' },
-            '10-12': { content: 'Juegos: Consola Retro', class: 'fun' },
-            '12-14': { content: 'Trabajo', class: 'work' },
-            '14-16': { content: 'Trabajo', class: 'work' },
-            '16-18': { content: 'Trabajo', class: 'work' },
-            '18-20': { content: 'Limpiar cosas personales', class: 'responsibilities' },
-            '20-22': { content: 'Juegos: PS4', class: 'fun' }
+            '8-9': { content: 'Aprender Chino (app)', class: 'studies' },
+            '9-10': { content: 'Aprender Chino (app)', class: 'studies' },
+            '10-11': { content: 'Juegos: Consola Retro', class: 'fun' },
+            '11-12': { content: 'Juegos: Consola Retro', class: 'fun' },
+            '12-13': { content: 'Trabajo', class: 'work' },
+            '13-14': { content: 'Trabajo', class: 'work' },
+            '14-15': { content: 'Trabajo', class: 'work' },
+            '15-16': { content: 'Trabajo', class: 'work' },
+            '16-17': { content: 'Trabajo', class: 'work' },
+            '17-18': { content: 'Trabajo', class: 'work' },
+            '18-19': { content: 'Limpiar cosas personales', class: 'responsibilities' },
+            '19-20': { content: 'Limpiar cosas personales', class: 'responsibilities' },
+            '20-21': { content: 'Juegos: PS4', class: 'fun' },
+            '21-22': { content: 'Juegos: PS4', class: 'fun' }
         },
         friday: {
-            '8-10': { content: 'Aprender Inglés (app)', class: 'studies' },
-            '10-12': { content: 'Juegos: PS3', class: 'fun' },
-            '12-14': { content: 'Trabajo', class: 'work' },
-            '14-16': { content: 'Trabajo', class: 'work' },
-            '16-18': { content: 'Trabajo', class: 'work' },
-            '18-20': { content: 'Juegos: Xbox 360', class: 'fun' }
+            '8-9': { content: 'Aprender Inglés (app)', class: 'studies' },
+            '9-10': { content: 'Aprender Inglés (app)', class: 'studies' },
+            '10-11': { content: 'Juegos: PS3', class: 'fun' },
+            '11-12': { content: 'Juegos: PS3', class: 'fun' },
+            '12-13': { content: 'Trabajo', class: 'work' },
+            '13-14': { content: 'Trabajo', class: 'work' },
+            '14-15': { content: 'Trabajo', class: 'work' },
+            '15-16': { content: 'Trabajo', class: 'work' },
+            '16-17': { content: 'Trabajo', class: 'work' },
+            '17-18': { content: 'Trabajo', class: 'work' },
+            '18-19': { content: 'Juegos: Xbox 360', class: 'fun' },
+            '19-20': { content: 'Juegos: Xbox 360', class: 'fun' }
         },
         saturday: {
-            '8-10': { content: 'Trabajo (9:00-11:00)', class: 'work' },
-            '10-12': { content: 'Trabajo (11:00-13:00)', class: 'work' },
-            '12-14': { content: 'Trabajo (13:00-15:00)', class: 'work' },
-            '14-16': { content: 'Trabajo (15:00-17:00)', class: 'work' },
-            '18-20': { content: 'Juegos: Consola menos usada', class: 'fun' },
-            '20-22': { content: 'Repaso de idiomas', class: 'studies' },
-            '22-24': { content: 'Tiempo libre', class: 'fun' }
+            '9-10': { content: 'Trabajo', class: 'work' },
+            '10-11': { content: 'Trabajo', class: 'work' },
+            '11-12': { content: 'Trabajo', class: 'work' },
+            '12-13': { content: 'Trabajo', class: 'work' },
+            '13-14': { content: 'Trabajo', class: 'work' },
+            '14-15': { content: 'Trabajo', class: 'work' },
+            '15-16': { content: 'Trabajo', class: 'work' },
+            '16-17': { content: 'Trabajo', class: 'work' },
+            '18-19': { content: 'Juegos: Consola menos usada', class: 'fun' },
+            '19-20': { content: 'Juegos: Consola menos usada', class: 'fun' },
+            '20-21': { content: 'Repaso de idiomas', class: 'studies' },
+            '21-22': { content: 'Repaso de idiomas', class: 'studies' },
+            '22-23': { content: 'Tiempo libre', class: 'fun' },
+            '23-0': { content: 'Tiempo libre', class: 'fun' }
         },
         sunday: {
-            '8-10': { content: '1 hora de repaso de idiomas', class: 'studies' },
-            '10-12': { content: 'Limpieza/organización', class: 'responsibilities' },
-            '18-20': { content: 'Maratón de juegos o película', class: 'fun' }
+            '8-9': { content: 'Repaso de idiomas', class: 'studies' },
+            '10-11': { content: 'Limpieza/organización', class: 'responsibilities' },
+            '11-12': { content: 'Limpieza/organización', class: 'responsibilities' },
+            '18-19': { content: 'Maratón de juegos o película', class: 'fun' },
+            '19-20': { content: 'Maratón de juegos o película', class: 'fun' }
         }
     };
 }
@@ -1354,91 +1405,97 @@ saveToLocalStorage(); // Añadir esta línea
 
         // Renderizar horario de escritorio
         function renderDesktopSchedule() {
-            scheduleDisplay.innerHTML = '';
-            
-            // Crear columna de horas
-            const timeColumn = document.createElement('div');
-            timeColumn.className = 'time-column';
-            
-            // Espacio vacío para el encabezado
-            timeColumn.appendChild(document.createElement('div'));
-            
-            // Añadir slots de tiempo
-            const timeSlotsDisplay = [
-                '6:00 - 8:00', '8:00 - 10:00', '10:00 - 12:00',
-                '12:00 - 14:00', '14:00 - 16:00', '16:00 - 18:00',
-                '18:00 - 20:00', '20:00 - 22:00', '22:00 - 0:00',
-                '0:00 - 2:00'
-            ];
-            
-            timeSlotsDisplay.forEach(slot => {
-                const timeSlot = document.createElement('div');
-                timeSlot.className = 'time-slot';
-                timeSlot.textContent = slot;
-                timeColumn.appendChild(timeSlot);
-            });
-            
-            scheduleDisplay.appendChild(timeColumn);
-            
-            // Crear columnas para cada día
-            const days = [
-                { id: 'monday', name: 'Lunes' },
-                { id: 'tuesday', name: 'Martes' },
-                { id: 'wednesday', name: 'Miércoles' },
-                { id: 'thursday', name: 'Jueves' },
-                { id: 'friday', name: 'Viernes' },
-                { id: 'saturday', name: 'Sábado' },
-                { id: 'sunday', name: 'Domingo' }
-            ];
-            
-            days.forEach(day => {
-                const dayColumn = document.createElement('div');
-                dayColumn.className = 'day-column';
-                
-                // Encabezado del día
-                const dayHeader = document.createElement('div');
-                dayHeader.className = 'day-header';
-                dayHeader.textContent = day.name;
-                dayColumn.appendChild(dayHeader);
-                
-                // Mapeo de horarios a índices
-                const timeIndexMap = {
-                    '6-8': 0, '8-10': 1, '10-12': 2,
-                    '12-14': 3, '14-16': 4, '16-18': 5,
-                    '18-20': 6, '20-22': 7, '22-24': 8,
-                    '0-2': 9
-                };
-                
-                // Inicializar slots vacíos
-                const dayActivities = new Array(10).fill(null);
-                
-                // Llenar con actividades existentes
-                if (scheduleData[day.id]) {
-                    Object.keys(scheduleData[day.id]).forEach(time => {
-                        const index = timeIndexMap[time];
-                        if (index !== undefined) {
-                            dayActivities[index] = scheduleData[day.id][time];
-                        }
-                    });
+    scheduleDisplay.innerHTML = '';
+    
+    // Crear columna de horas
+    const timeColumn = document.createElement('div');
+    timeColumn.className = 'time-column';
+    
+    // Espacio vacío para el encabezado
+    timeColumn.appendChild(document.createElement('div'));
+    
+    // Añadir slots de tiempo
+    const timeSlotsDisplay = [
+        '7:00 - 8:00', '8:00 - 9:00', '9:00 - 10:00',
+        '10:00 - 11:00', '11:00 - 12:00', '12:00 - 13:00',
+        '13:00 - 14:00', '14:00 - 15:00', '15:00 - 16:00',
+        '16:00 - 17:00', '17:00 - 18:00', '18:00 - 19:00',
+        '19:00 - 20:00', '20:00 - 21:00', '21:00 - 22:00',
+        '22:00 - 23:00', '23:00 - 0:00', '0:00 - 1:00',
+        '1:00 - 2:00'
+    ];
+    
+    timeSlotsDisplay.forEach(slot => {
+        const timeSlot = document.createElement('div');
+        timeSlot.className = 'time-slot';
+        timeSlot.textContent = slot;
+        timeColumn.appendChild(timeSlot);
+    });
+    
+    scheduleDisplay.appendChild(timeColumn);
+    
+    // Crear columnas para cada día
+    const days = [
+        { id: 'monday', name: 'Lunes' },
+        { id: 'tuesday', name: 'Martes' },
+        { id: 'wednesday', name: 'Miércoles' },
+        { id: 'thursday', name: 'Jueves' },
+        { id: 'friday', name: 'Viernes' },
+        { id: 'saturday', name: 'Sábado' },
+        { id: 'sunday', name: 'Domingo' }
+    ];
+    
+    days.forEach(day => {
+        const dayColumn = document.createElement('div');
+        dayColumn.className = 'day-column';
+        
+        // Encabezado del día
+        const dayHeader = document.createElement('div');
+        dayHeader.className = 'day-header';
+        dayHeader.textContent = day.name;
+        dayColumn.appendChild(dayHeader);
+        
+        // Mapeo de horarios a índices
+        const timeIndexMap = {
+            '7-8': 0, '8-9': 1, '9-10': 2,
+            '10-11': 3, '11-12': 4, '12-13': 5,
+            '13-14': 6, '14-15': 7, '15-16': 8,
+            '16-17': 9, '17-18': 10, '18-19': 11,
+            '19-20': 12, '20-21': 13, '21-22': 14,
+            '22-23': 15, '23-0': 16, '0-1': 17,
+            '1-2': 18
+        };
+        
+        // Inicializar slots vacíos
+        const dayActivities = new Array(19).fill(null);
+        
+        // Llenar con actividades existentes
+        if (scheduleData[day.id]) {
+            Object.keys(scheduleData[day.id]).forEach(time => {
+                const index = timeIndexMap[time];
+                if (index !== undefined) {
+                    dayActivities[index] = scheduleData[day.id][time];
                 }
-                
-                // Crear elementos para cada slot
-                dayActivities.forEach((activity, index) => {
-    const slot = document.createElement('div');
-    
-    if (activity) {
-    slot.className = `activity ${activity.class}`;
-    slot.textContent = activity.content;
-} else {
-    slot.className = 'empty-slot';
-}
-    
-    dayColumn.appendChild(slot);
-});
-                
-                scheduleDisplay.appendChild(dayColumn);
             });
         }
+        
+        // Crear elementos para cada slot
+        dayActivities.forEach((activity, index) => {
+            const slot = document.createElement('div');
+            
+            if (activity) {
+                slot.className = `activity ${activity.class}`;
+                slot.textContent = activity.content;
+            } else {
+                slot.className = 'empty-slot';
+            }
+            
+            dayColumn.appendChild(slot);
+        });
+        
+        scheduleDisplay.appendChild(dayColumn);
+    });
+}
 
         // Renderizar horario móvil
         function renderMobileSchedule() {
@@ -1678,15 +1735,11 @@ function renderCategorySummary() {
 
 // Función auxiliar para calcular horas de un slot de tiempo
 function calculateHours(timeKey) {
-    // Caso especial para 22-0 que es 22-24
-    if (timeKey === '22-24') return 2;
-    if (timeKey === '0-2') return 2;
-
-    const [start, end] = timeKey.split('-').map(Number);
-    // Manejar el caso de horas que pasan la medianoche (ej. 23-1)
-    const hours = end > start ? end - start : (24 - start) + end;
-    return hours;
+    // Todos los slots son de 1 hora ahora
+    return 1;
 }
+
+    
 
 
 
