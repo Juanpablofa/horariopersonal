@@ -587,7 +587,7 @@
                             <div class="category-option" style="background-color: #d7ccc8; border-left: 4px solid #5d4037;" data-class="work">Trabajos</div>
                         </div>
                         
-                        <button id="add-group-btn" class="new-group-btn">+ Crear Nuevo Grupo</button>
+                        <button id="add-group-btn" class="new-group-btn">+ Nueva Categoria</button>
                         
                         <div class="new-group-form" id="new-group-form">
                             <div class="new-group-input">
@@ -728,12 +728,48 @@ function init() {
             scheduleData = JSON.parse(savedData);
         } catch (e) {
             console.error("Error al cargar datos desde localStorage:", e);
-            // Si hay error, cargar datos por defecto
             scheduleData = getDefaultSchedule();
         }
     } else {
-        // Si no hay datos guardados, cargar horario por defecto
         scheduleData = getDefaultSchedule();
+    }
+    
+    // Cargar colores de grupo guardados
+    const savedGroupColors = localStorage.getItem('groupColors');
+    if (savedGroupColors) {
+        try {
+            const loadedColors = JSON.parse(savedGroupColors);
+            // Actualizar solo los nombres, mantener los colores por defecto
+            loadedColors.forEach((color, index) => {
+                if (color.name && index < groupColors.length) {
+                    groupColors[index].name = color.name;
+                    
+                    // Si hay nombres guardados, crear los elementos de categoría correspondientes
+                    if (index < availableGroupClasses.length) {
+                        const groupClass = availableGroupClasses[index];
+                        const categoryContainer = document.querySelector('.category-options');
+                        
+                        // Verificar si la categoría ya existe
+                        const existingCategory = document.querySelector(`.category-option[data-class="${groupClass}"]`);
+                        if (!existingCategory) {
+                            const newCategory = document.createElement('div');
+                            newCategory.className = 'category-option';
+                            newCategory.style.backgroundColor = groupColors[index].bg;
+                            newCategory.style.borderLeft = `4px solid ${groupColors[index].border}`;
+                            newCategory.dataset.class = groupClass;
+                            newCategory.textContent = color.name;
+                            newCategory.addEventListener('click', handleCategorySelect);
+                            categoryContainer.appendChild(newCategory);
+                            
+                            // Actualizar el contador
+                            newGroupCounter = Math.max(newGroupCounter, index + 2);
+                        }
+                    }
+                }
+            });
+        } catch (e) {
+            console.error("Error al cargar colores de grupo:", e);
+        }
     }
 
     // Cargar eventos
@@ -890,40 +926,47 @@ function saveToLocalStorage() {
 
         // Manejar guardar nuevo grupo
        function handleSaveNewGroup() {
-            const groupName = newGroupName.value.trim();
-            if (!groupName) return;
-            
-            if (newGroupCounter > 4) {
-                showMessage('Has alcanzado el límite de nuevos grupos (4)', 'error');
-                return;
-            }
-            
-            const groupClass = availableGroupClasses[newGroupCounter - 1];
-            const groupColor = groupColors[newGroupCounter - 1];
-            groupColor.name = groupName; // Guardar el nombre del grupo
-            
-            // Crear nuevo elemento de categoría
-            const newCategory = document.createElement('div');
-            newCategory.className = 'category-option';
-            newCategory.style.backgroundColor = groupColor.bg;
-            newCategory.style.borderLeft = `4px solid ${groupColor.border}`;
-            newCategory.dataset.class = groupClass;
-            newCategory.textContent = groupName;
-            newCategory.addEventListener('click', handleCategorySelect);
-            
-            // Añadir al contenedor de categorías
-            const categoryContainer = document.querySelector('.category-options');
-            categoryContainer.appendChild(newCategory);
-            
-            // Incrementar contador y resetear formulario
-           newGroupCounter++;
-toggleNewGroupForm();
-showMessage(`Nuevo grupo "${groupName}" creado`, 'success');
-saveToLocalStorage(); // Añadir esta línea
-            
-            // Actualizar el horario para mostrar la nueva categoría si es usada
-            renderSchedule();
-        }
+    const groupName = newGroupName.value.trim();
+    if (!groupName) return;
+    
+    if (newGroupCounter > 4) {
+        showMessage('Has alcanzado el límite de nuevos grupos (4)', 'error');
+        return;
+    }
+    
+    const groupClass = availableGroupClasses[newGroupCounter - 1];
+    const groupColor = groupColors[newGroupCounter - 1];
+    groupColor.name = groupName;
+    
+    // Guardar los colores de grupo en localStorage
+    saveGroupColorsToLocalStorage();
+    
+    // Crear nuevo elemento de categoría
+    const newCategory = document.createElement('div');
+    newCategory.className = 'category-option';
+    newCategory.style.backgroundColor = groupColor.bg;
+    newCategory.style.borderLeft = `4px solid ${groupColor.border}`;
+    newCategory.dataset.class = groupClass;
+    newCategory.textContent = groupName;
+    newCategory.addEventListener('click', handleCategorySelect);
+    
+    // Añadir al contenedor de categorías
+    const categoryContainer = document.querySelector('.category-options');
+    categoryContainer.appendChild(newCategory);
+    
+    // Incrementar contador y resetear formulario
+    newGroupCounter++;
+    toggleNewGroupForm();
+    showMessage(`Nuevo grupo "${groupName}" creado`, 'success');
+    
+    // Actualizar el horario para mostrar la nueva categoría si es usada
+    renderSchedule();
+}
+
+// Añadir esta función si no existe
+function saveGroupColorsToLocalStorage() {
+    localStorage.setItem('groupColors', JSON.stringify(groupColors));
+}
 
         // Manejar cambio de día
         function handleDayChange(e) {
